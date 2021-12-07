@@ -1,0 +1,22 @@
+http:
+  host: '0.0.0.0'
+  port: 3000
+
+app:
+  env: 'development'
+  language: 'en'
+  debug: false
+
+
+  logger:
+    http: false
+    system: false
+
+  hash:
+    passwordSaltLength: 16
+
+  auth:
+    jwtSecretKey: ''
+    jwtExpiration: '1h'
+    basicClientId: ''
+    basicClientSecret: ''
