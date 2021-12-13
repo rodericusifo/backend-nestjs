@@ -2,7 +2,10 @@ import { CartsService } from '@app/carts/service/carts.service';
 import { AddProductToOrderDTO } from '@app/orders/dto/add-product-to-order.dto';
 import { CreateOrderDTO } from '@app/orders/dto/create-order.dto';
 import { OrderDTO } from '@app/orders/dto/order.dto';
+import { ReadAllOrderByAdminDTO } from '@app/orders/dto/read-all-order-by-admin.dto';
+import { ReadAllOrderByCustomerDTO } from '@app/orders/dto/read-all-order-by-customer.dto';
 import { ReadOrderByAdminDTO } from '@app/orders/dto/read-order-by-admin.dto';
+import { ReadOrderByCustomerDTO } from '@app/orders/dto/read-order-by-customer.dto';
 import { OrdersRepository } from '@app/orders/repository/orders.repository';
 import { IOrdersService } from '@app/orders/service/interface/orders-service.interface';
 import { Injectable } from '@nestjs/common';
@@ -10,9 +13,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { IQuery } from '@shared/interface/other/query.interface';
 import { IReadAllServiceMethodResponse } from '@shared/interface/other/service-method-response/read-all-service-method-response.interface';
 import { plainToClass } from 'class-transformer';
-import { ReadAllOrderByAdminDTO } from '../dto/read-all-order-by-admin.dto';
-import { ReadAllOrderByCustomerDTO } from '../dto/read-all-order-by-customer.dto';
-import { ReadOrderByCustomerDTO } from '../dto/read-order-by-customer.dto';
 
 @Injectable()
 export class OrdersService implements IOrdersService {

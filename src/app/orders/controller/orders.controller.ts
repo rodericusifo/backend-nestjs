@@ -4,6 +4,7 @@ import { AddProductCustomerOrderParamRequest } from '@app/orders/controller/requ
 import { DetailOrderByAdminParamRequest } from '@app/orders/controller/request/param/detail-order-by-admin-param.request';
 import { DetailOrderByCustomerParamRequest } from '@app/orders/controller/request/param/detail-order-by-customer-param.request';
 import { ListOrderByAdminQueryRequest } from '@app/orders/controller/request/query/list-order-by-admin-query.request';
+import { ListOrderByCustomerQueryRequest } from '@app/orders/controller/request/query/list-order-by-customer-query.request';
 import { OrdersService } from '@app/orders/service/orders.service';
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
@@ -14,7 +15,6 @@ import { Auth } from '@shared/decorator/auth.decorator';
 import { User } from '@shared/decorator/user.decorator';
 import { Role } from '@shared/enum/role.enum';
 import { UserRequest } from '@shared/request/user/user.request';
-import { ListOrderByCustomerQueryRequest } from './request/query/list-order-by-customer-query.request';
 
 @ApiTags('Orders')
 @Controller('orders')
