@@ -5,6 +5,7 @@ import { AddProductToOrderDTO } from '@app/orders/dto/add-product-to-order.dto';
 import { CreateOrderDTO } from '@app/orders/dto/create-order.dto';
 import { OrderDTO } from '@app/orders/dto/order.dto';
 import { ReadOrderByAdminDTO } from '@app/orders/dto/read-order-by-admin.dto';
+import { ReadOrderByCustomerDTO } from '@app/orders/dto/read-order-by-customer.dto';
 import { OrdersRepository } from '@app/orders/repository/orders.repository';
 import { OrdersService } from '@app/orders/service/orders.service';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -193,6 +194,71 @@ describe('OrdersService', () => {
         .mockImplementation(() => Promise.reject('Failed Read Order By Admin'));
       try {
         const data = await ordersService.readOrderByAdmin(argument);
+        expect(data).toEqual(expectedResult);
+      } catch (error) {
+        expect(error).toEqual(expectedError);
+      }
+    });
+  });
+
+  describe('readOrderByCustomer()', () => {
+    it('should successfully read order by customer', async () => {
+      const argument: ReadOrderByCustomerDTO = {
+        id: randomUUID(),
+        userId: randomUUID(),
+      };
+      const expectedResult: OrderDTO = plainToClass(OrderDTO, {
+        id: argument.id,
+        title: 'Order 1',
+        userId: argument.userId,
+        carts: [
+          plainToClass(CartDTO, {
+            id: '12345',
+            quantity: 3,
+          } as Partial<CartDTO>),
+        ],
+      } as Partial<OrderDTO>);
+      const expectedError = undefined;
+      jest
+        .spyOn(ordersRepository, 'findOrderWithUserId')
+        .mockImplementation(() =>
+          Promise.resolve(
+            plainToClass(OrderDTO, {
+              id: argument.id,
+              title: 'Order 1',
+              userId: argument.userId,
+            } as Partial<OrderDTO>),
+          ),
+        );
+      jest.spyOn(cartsService, 'readAllCart').mockImplementation(() =>
+        Promise.resolve([
+          plainToClass(CartDTO, {
+            id: '12345',
+            quantity: 3,
+          } as Partial<CartDTO>),
+        ]),
+      );
+      try {
+        const data = await ordersService.readOrderByCustomer(argument);
+        expect(data).toEqual(expectedResult);
+      } catch (error) {
+        expect(error).toEqual(expectedError);
+      }
+    });
+    it('should failed read order by customer', async () => {
+      const argument: ReadOrderByCustomerDTO = {
+        id: randomUUID(),
+        userId: randomUUID(),
+      };
+      const expectedResult = undefined;
+      const expectedError = 'Failed Read Order By Customer';
+      jest
+        .spyOn(ordersRepository, 'findOrderWithUserId')
+        .mockImplementation(() =>
+          Promise.reject('Failed Read Order By Customer'),
+        );
+      try {
+        const data = await ordersService.readOrderByCustomer(argument);
         expect(data).toEqual(expectedResult);
       } catch (error) {
         expect(error).toEqual(expectedError);

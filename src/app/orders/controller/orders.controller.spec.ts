@@ -6,6 +6,7 @@ import { AddProductCustomerOrderBodyRequest } from '@app/orders/controller/reque
 import { CreateCustomerOrderBodyRequest } from '@app/orders/controller/request/body/create-customer-order-body.request';
 import { AddProductCustomerOrderParamRequest } from '@app/orders/controller/request/param/add-product-customer-order-param.request';
 import { DetailOrderByAdminParamRequest } from '@app/orders/controller/request/param/detail-order-by-admin-param.request';
+import { DetailOrderByCustomerParamRequest } from '@app/orders/controller/request/param/detail-order-by-customer-param.request';
 import { OrderDTO } from '@app/orders/dto/order.dto';
 import { OrdersRepository } from '@app/orders/repository/orders.repository';
 import { OrdersService } from '@app/orders/service/orders.service';
@@ -240,6 +241,86 @@ describe('OrdersController', () => {
         );
       try {
         const data = await ordersController.detailOrderByAdmin(paramArgument);
+        expect(data).toEqual(expectedResult);
+      } catch (error) {
+        expect(error).toEqual(expectedError);
+      }
+    });
+  });
+
+  describe('detailOrderByCustomer()', () => {
+    it('should successfully see detail order by customer', async () => {
+      const paramArgument: DetailOrderByCustomerParamRequest = {
+        id: randomUUID(),
+      };
+      const userArgument: UserRequest = {
+        id: randomUUID(),
+        email: 'rodericus123@gmail.com',
+        name: 'Rodericus Ifo',
+        roles: [Role.Customer],
+      };
+      const expectedResult: IResponse = {
+        message: 'Order Found',
+        data: plainToClass(OrderDTO, {
+          id: paramArgument.id,
+          title: 'Order 1',
+          userId: userArgument.id,
+          carts: [
+            plainToClass(CartDTO, {
+              id: '12345',
+              quantity: 2,
+            } as Partial<CartDTO>),
+          ],
+        } as Partial<OrderDTO>),
+      };
+      const expectedError = undefined;
+      jest.spyOn(ordersService, 'readOrderByCustomer').mockImplementation(() =>
+        Promise.resolve(
+          plainToClass(OrderDTO, {
+            id: paramArgument.id,
+            title: 'Order 1',
+            userId: userArgument.id,
+            carts: [
+              plainToClass(CartDTO, {
+                id: '12345',
+                quantity: 2,
+              } as Partial<CartDTO>),
+            ],
+          } as Partial<OrderDTO>),
+        ),
+      );
+      try {
+        const data = await ordersController.detailOrderByCustomer(
+          userArgument,
+          paramArgument,
+        );
+        expect(data).toEqual(expectedResult);
+      } catch (error) {
+        expect(error).toEqual(expectedError);
+      }
+    });
+    it('should failed see detail order by customer', async () => {
+      const paramArgument: DetailOrderByCustomerParamRequest = {
+        id: randomUUID(),
+      };
+      const userArgument: UserRequest = {
+        id: randomUUID(),
+        email: 'rodericus123@gmail.com',
+        name: 'Rodericus Ifo',
+        roles: [Role.Customer],
+      };
+      const expectedResult = undefined;
+      const expectedError = 'Failed See Order Detail By Customer';
+      jest
+        .spyOn(ordersService, 'readOrderByCustomer')
+        .mockImplementation(() =>
+          Promise.reject('Failed See Order Detail By Customer'),
+        );
+      try {
+        const data = await ordersController.detailOrderByCustomer(
+          userArgument,
+          paramArgument,
+        );
         expect(data).toEqual(expectedResult);
       } catch (error) {
         expect(error).toEqual(expectedError);

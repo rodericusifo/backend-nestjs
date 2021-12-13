@@ -8,6 +8,7 @@ import { IOrdersService } from '@app/orders/service/interface/orders-service.int
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
+import { ReadOrderByCustomerDTO } from '../dto/read-order-by-customer.dto';
 
 @Injectable()
 export class OrdersService implements IOrdersService {
@@ -41,6 +42,22 @@ export class OrdersService implements IOrdersService {
       id: payload.id,
     });
     const foundOrderDTO = await this.ordersRepository.findOrder(orderDTO);
+    foundOrderDTO.carts = await this.cartsService.readAllCart({
+      orderId: foundOrderDTO.id,
+    });
+    return foundOrderDTO;
+  }
+
+  async readOrderByCustomer(
+    payload: ReadOrderByCustomerDTO,
+  ): Promise<OrderDTO> {
+    const orderDTO = plainToClass(OrderDTO, {
+      id: payload.id,
+      userId: payload.userId,
+    });
+    const foundOrderDTO = await this.ordersRepository.findOrderWithUserId(
+      orderDTO,
+    );
     foundOrderDTO.carts = await this.cartsService.readAllCart({
       orderId: foundOrderDTO.id,
     });
