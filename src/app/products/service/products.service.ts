@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { IQuery } from '@shared/interface/other/query.interface';
 import { IReadAllServiceMethodResponse } from '@shared/interface/other/service-method-response/read-all-service-method-response.interface';
 import { plainToClass } from 'class-transformer';
+import { UpdateProductDTO } from '../dto/update-product.dto';
 
 @Injectable()
 export class ProductsService implements IProductsService {
@@ -36,6 +37,11 @@ export class ProductsService implements IProductsService {
       findAll: productDTOs,
       findAllPagination: productDTOsPagination,
     };
+  }
+
+  async updateProduct(payload: UpdateProductDTO) {
+    const productDTO = plainToClass(ProductDTO, payload);
+    await this.productsRepository.updateProduct(productDTO);
   }
 
   async readProduct(payload: ReadProductDTO): Promise<ProductDTO> {

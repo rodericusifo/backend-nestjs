@@ -60,6 +60,16 @@ export class ProductsRepository
     return ProductsMapper.EntityToDTO(foundProduct);
   }
 
+  async updateProduct(productDTO: Partial<ProductDTO>) {
+    const product = ProductsMapper.DTOToEntity(productDTO);
+    const updatedProduct = await this.update({ id: product.id }, product);
+    if (!updatedProduct.affected) {
+      throw new NotFoundException(
+        `Product with ID: ${product.id} was not found`,
+      );
+    }
+  }
+
   async clearAllProduct() {
     await this.clear();
   }

@@ -6,5 +6,6 @@ export interface IProductsRepository {
   clearAllProduct();
   findAllProductPagination(query: IQuery): Promise<ProductDTO[]>;
   findAllProduct(): Promise<ProductDTO[]>;
+  updateProduct(productDTO: Partial<ProductDTO>);
   findProduct(productDTO: Partial<ProductDTO>): Promise<ProductDTO>;
 }

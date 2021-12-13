@@ -28,6 +28,7 @@ describe('CartsService', () => {
             deleteAllProduct: jest.fn(),
             readAllProduct: jest.fn(),
             readProduct: jest.fn(),
+            updateProduct: jest.fn(),
           } as IProductsService,
         },
         {

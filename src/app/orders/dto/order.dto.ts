@@ -65,4 +65,8 @@ export class OrderDTO {
   @IsOptional()
   @IsDateString()
   deletedAt?: Date;
+
+  changeOrderStatus(status: OrderStatus) {
+    this.status = status;
+  }
 }

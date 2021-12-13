@@ -7,11 +7,14 @@ import { CreateCustomerOrderBodyRequest } from '@app/orders/controller/request/b
 import { AddProductCustomerOrderParamRequest } from '@app/orders/controller/request/param/add-product-customer-order-param.request';
 import { DetailOrderByAdminParamRequest } from '@app/orders/controller/request/param/detail-order-by-admin-param.request';
 import { DetailOrderByCustomerParamRequest } from '@app/orders/controller/request/param/detail-order-by-customer-param.request';
+import { SubmitOrderByCustomerParamRequest } from '@app/orders/controller/request/param/submit-order-by-customer-param.request';
 import { ListOrderByAdminQueryRequest } from '@app/orders/controller/request/query/list-order-by-admin-query.request';
 import { ListOrderByCustomerQueryRequest } from '@app/orders/controller/request/query/list-order-by-customer-query.request';
 import { OrderDTO } from '@app/orders/dto/order.dto';
 import { OrdersRepository } from '@app/orders/repository/orders.repository';
 import { OrdersService } from '@app/orders/service/orders.service';
+import { IProductsService } from '@app/products/service/interface/products-service.interface';
+import { ProductsService } from '@app/products/service/products.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { IResponse, IResponsePaging } from '@response/response.interface';
@@ -40,6 +43,16 @@ describe('OrdersController', () => {
             createCart: jest.fn(),
             readAllCart: jest.fn(),
           } as ICartsService,
+        },
+        {
+          provide: ProductsService,
+          useValue: {
+            createProduct: jest.fn(),
+            deleteAllProduct: jest.fn(),
+            readAllProduct: jest.fn(),
+            readProduct: jest.fn(),
+            updateProduct: jest.fn(),
+          } as IProductsService,
         },
         {
           provide: getRepositoryToken(OrdersRepository),
@@ -502,6 +515,63 @@ describe('OrdersController', () => {
         const data = await ordersController.listOrderByCustomer(
           userArgument,
           queryArgument,
+        );
+        expect(data).toEqual(expectedResult);
+      } catch (error) {
+        expect(error).toEqual(expectedError);
+      }
+    });
+  });
+
+  describe('submitOrderByCustomer()', () => {
+    it('should successfully submit order by customer', async () => {
+      const paramArgument: SubmitOrderByCustomerParamRequest = {
+        id: randomUUID(),
+      };
+      const userArgument: UserRequest = {
+        id: randomUUID(),
+        email: 'rodericus123@gmail.com',
+        name: 'Rodericus Ifo',
+        roles: [Role.Customer],
+      };
+      const expectedResult: IResponse = {
+        message: 'Submit Order Success',
+      };
+      const expectedError = undefined;
+      jest
+        .spyOn(ordersService, 'submitOrder')
+        .mockImplementation(() => Promise.resolve(null));
+      try {
+        const data = await ordersController.submitOrderByCustomer(
+          userArgument,
+          paramArgument,
+        );
+        expect(data).toEqual(expectedResult);
+      } catch (error) {
+        expect(error).toEqual(expectedError);
+      }
+    });
+    it('should failed submit order by customer', async () => {
+      const paramArgument: SubmitOrderByCustomerParamRequest = {
+        id: randomUUID(),
+      };
+      const userArgument: UserRequest = {
+        id: randomUUID(),
+        email: 'rodericus123@gmail.com',
+        name: 'Rodericus Ifo',
+        roles: [Role.Customer],
+      };
+      const expectedResult = undefined;
+      const expectedError = 'Failed Submit Order By Customer';
+      jest
+        .spyOn(ordersService, 'submitOrder')
+        .mockImplementation(() =>
+          Promise.reject('Failed Submit Order By Customer'),
+        );
+      try {
+        const data = await ordersController.submitOrderByCustomer(
+          userArgument,
+          paramArgument,
         );
         expect(data).toEqual(expectedResult);
       } catch (error) {

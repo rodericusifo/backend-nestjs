@@ -8,10 +8,14 @@ import { ReadAllOrderByAdminDTO } from '@app/orders/dto/read-all-order-by-admin.
 import { ReadAllOrderByCustomerDTO } from '@app/orders/dto/read-all-order-by-customer.dto';
 import { ReadOrderByAdminDTO } from '@app/orders/dto/read-order-by-admin.dto';
 import { ReadOrderByCustomerDTO } from '@app/orders/dto/read-order-by-customer.dto';
+import { SubmitOrderDTO } from '@app/orders/dto/submit-order.dto';
 import { OrdersRepository } from '@app/orders/repository/orders.repository';
 import { OrdersService } from '@app/orders/service/orders.service';
+import { IProductsService } from '@app/products/service/interface/products-service.interface';
+import { ProductsService } from '@app/products/service/products.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { OrderStatus } from '@shared/enum/order-status.enum';
 import { IReadAllServiceMethodResponse } from '@shared/interface/other/service-method-response/read-all-service-method-response.interface';
 import { plainToClass } from 'class-transformer';
 import { randomUUID } from 'crypto';
@@ -20,6 +24,7 @@ describe('OrdersService', () => {
   let ordersService: OrdersService;
   let ordersRepository: OrdersRepository;
   let cartsService: CartsService;
+  let productsService: ProductsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -33,6 +38,16 @@ describe('OrdersService', () => {
           } as ICartsService,
         },
         {
+          provide: ProductsService,
+          useValue: {
+            createProduct: jest.fn(),
+            deleteAllProduct: jest.fn(),
+            readAllProduct: jest.fn(),
+            readProduct: jest.fn(),
+            updateProduct: jest.fn(),
+          } as IProductsService,
+        },
+        {
           provide: getRepositoryToken(OrdersRepository),
           useClass: OrdersRepository,
         },
@@ -44,12 +59,14 @@ describe('OrdersService', () => {
       getRepositoryToken(OrdersRepository),
     );
     cartsService = module.get<CartsService>(CartsService);
+    productsService = module.get<ProductsService>(ProductsService);
   });
 
   it('should be defined', () => {
     expect(ordersService).toBeDefined();
     expect(ordersRepository).toBeDefined();
     expect(cartsService).toBeDefined();
+    expect(productsService).toBeDefined();
   });
 
   describe('createOrder()', () => {
@@ -436,6 +453,69 @@ describe('OrdersService', () => {
         );
       try {
         const data = await ordersService.readAllOrderByCustomer(argument);
+        expect(data).toEqual(expectedResult);
+      } catch (error) {
+        expect(error).toEqual(expectedError);
+      }
+    });
+  });
+
+  describe('submitOrder()', () => {
+    it('should successfully submit order', async () => {
+      const argument: SubmitOrderDTO = {
+        id: randomUUID(),
+        userId: randomUUID(),
+      };
+      const expectedResult = undefined;
+      const expectedError = undefined;
+      jest
+        .spyOn(ordersRepository, 'findOrderWithUserId')
+        .mockImplementation(() =>
+          Promise.resolve(
+            plainToClass(OrderDTO, {
+              id: argument.id,
+              title: 'Order 5',
+              status: OrderStatus.Draft,
+              userId: argument.userId,
+            } as Partial<OrderDTO>),
+          ),
+        );
+      jest.spyOn(cartsService, 'readAllCart').mockImplementation(() =>
+        Promise.resolve([
+          plainToClass(CartDTO, {
+            id: '54321',
+            quantity: 3,
+            product: {
+              stock: 5,
+            },
+          } as Partial<CartDTO>),
+        ]),
+      );
+      jest
+        .spyOn(productsService, 'updateProduct')
+        .mockImplementation(() => Promise.resolve(null));
+      jest
+        .spyOn(ordersRepository, 'updateOrder')
+        .mockImplementation(() => Promise.resolve(null));
+      try {
+        const data = await ordersService.submitOrder(argument);
+        expect(data).toEqual(expectedResult);
+      } catch (error) {
+        expect(error).toEqual(expectedError);
+      }
+    });
+    it('should failed submit order', async () => {
+      const argument: SubmitOrderDTO = {
+        id: randomUUID(),
+        userId: randomUUID(),
+      };
+      const expectedResult = undefined;
+      const expectedError = 'Failed Submit Order';
+      jest
+        .spyOn(ordersRepository, 'findOrderWithUserId')
+        .mockImplementation(() => Promise.reject('Failed Submit Order'));
+      try {
+        const data = await ordersService.submitOrder(argument);
         expect(data).toEqual(expectedResult);
       } catch (error) {
         expect(error).toEqual(expectedError);

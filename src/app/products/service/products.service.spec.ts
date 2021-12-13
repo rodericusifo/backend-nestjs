@@ -2,6 +2,7 @@ import { CreateProductDTO } from '@app/products/dto/create-product.dto';
 import { ProductDTO } from '@app/products/dto/product.dto';
 import { ReadAllProductDTO } from '@app/products/dto/read-all-product.dto';
 import { ReadProductDTO } from '@app/products/dto/read-product.dto';
+import { UpdateProductDTO } from '@app/products/dto/update-product.dto';
 import { ProductsRepository } from '@app/products/repository/products.repository';
 import { ProductsService } from '@app/products/service/products.service';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -218,6 +219,49 @@ describe('ProductsService', () => {
         .mockImplementation(() => Promise.reject('Failed Read Product'));
       try {
         const data = await productsService.readProduct(argument);
+        expect(data).toEqual(expectedResult);
+      } catch (error) {
+        expect(error).toEqual(expectedError);
+      }
+    });
+  });
+
+  describe('updateProduct()', () => {
+    it('should successfully update a product', async () => {
+      const argument: UpdateProductDTO = {
+        id: randomUUID(),
+        name: 'Apple',
+        price: 100,
+        stock: 0,
+        description: '',
+      };
+      const expectedResult = undefined;
+      const expectedError = undefined;
+      jest
+        .spyOn(productsRepository, 'updateProduct')
+        .mockImplementation(() => Promise.resolve(null));
+      try {
+        const data = await productsService.updateProduct(argument);
+        expect(data).toEqual(expectedResult);
+      } catch (error) {
+        expect(error).toEqual(expectedError);
+      }
+    });
+    it('should failed update a product', async () => {
+      const argument: UpdateProductDTO = {
+        id: randomUUID(),
+        name: 'Apple',
+        price: 100,
+        stock: 0,
+        description: '',
+      };
+      const expectedResult = undefined;
+      const expectedError = 'Failed Update Product';
+      jest
+        .spyOn(productsRepository, 'updateProduct')
+        .mockImplementation(() => Promise.reject('Failed Update Product'));
+      try {
+        const data = await productsService.updateProduct(argument);
         expect(data).toEqual(expectedResult);
       } catch (error) {
         expect(error).toEqual(expectedError);

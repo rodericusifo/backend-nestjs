@@ -3,10 +3,11 @@ import { CreateCustomerOrderBodyRequest } from '@app/orders/controller/request/b
 import { AddProductCustomerOrderParamRequest } from '@app/orders/controller/request/param/add-product-customer-order-param.request';
 import { DetailOrderByAdminParamRequest } from '@app/orders/controller/request/param/detail-order-by-admin-param.request';
 import { DetailOrderByCustomerParamRequest } from '@app/orders/controller/request/param/detail-order-by-customer-param.request';
+import { SubmitOrderByCustomerParamRequest } from '@app/orders/controller/request/param/submit-order-by-customer-param.request';
 import { ListOrderByAdminQueryRequest } from '@app/orders/controller/request/query/list-order-by-admin-query.request';
 import { ListOrderByCustomerQueryRequest } from '@app/orders/controller/request/query/list-order-by-customer-query.request';
 import { OrdersService } from '@app/orders/service/orders.service';
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Response, ResponseStatusCode } from '@response/response.decorator';
 import { IResponse, IResponsePaging } from '@response/response.interface';
@@ -84,6 +85,20 @@ export class OrdersController {
       userId: user.id,
     });
     return this.responseService.success('Order Found', result);
+  }
+
+  @ResponseStatusCode()
+  @Auth(Role.Customer)
+  @Put(':id/submit/customer')
+  async submitOrderByCustomer(
+    @User() user: UserRequest,
+    @Param() param: SubmitOrderByCustomerParamRequest,
+  ): Promise<IResponse> {
+    await this.ordersService.submitOrder({
+      ...param,
+      userId: user.id,
+    });
+    return this.responseService.success('Submit Order Success');
   }
 
   @ResponseStatusCode()
