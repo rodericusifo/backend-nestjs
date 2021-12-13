@@ -1,14 +1,13 @@
-import { NestFactory, Reflector } from '@nestjs/core';
+import { AppModule } from '@app/app.module';
 import {
   ClassSerializerInterceptor,
   Logger,
   ValidationPipe,
 } from '@nestjs/common';
-import { AppModule } from '@app/app.module';
 import { ConfigService } from '@nestjs/config';
+import { NestFactory, Reflector } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ResponseFilter } from '@response/response.filter';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { RolesGuard } from '@shared/guard/roles.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {

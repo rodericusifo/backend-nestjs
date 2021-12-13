@@ -107,7 +107,7 @@ export class OrdersRepository
     const order = OrdersMapper.DTOToEntity(orderDTO);
     const updatedOrder = await this.update(
       { id: order.id, userId: order.userId },
-      { status: order.status },
+      { status: order.status, paymentProofLink: order.paymentProofLink },
     );
     if (!updatedOrder.affected) {
       throw new NotFoundException(`Order with ID: ${order.id} was not found`);

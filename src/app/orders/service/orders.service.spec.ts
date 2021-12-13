@@ -1,6 +1,9 @@
 import { CartDTO } from '@app/carts/dto/cart.dto';
 import { CartsService } from '@app/carts/service/carts.service';
 import { ICartsService } from '@app/carts/service/interface/carts-service.interface';
+import { FileDTO } from '@app/files/dto/file.dto';
+import { FilesService } from '@app/files/service/files.service';
+import { IFilesService } from '@app/files/service/interface/files-service.interface';
 import { AddProductToOrderDTO } from '@app/orders/dto/add-product-to-order.dto';
 import { CreateOrderDTO } from '@app/orders/dto/create-order.dto';
 import { OrderDTO } from '@app/orders/dto/order.dto';
@@ -8,11 +11,13 @@ import { ReadAllOrderByAdminDTO } from '@app/orders/dto/read-all-order-by-admin.
 import { ReadAllOrderByCustomerDTO } from '@app/orders/dto/read-all-order-by-customer.dto';
 import { ReadOrderByAdminDTO } from '@app/orders/dto/read-order-by-admin.dto';
 import { ReadOrderByCustomerDTO } from '@app/orders/dto/read-order-by-customer.dto';
+import { SubmitOrderPaymentProofDTO } from '@app/orders/dto/submit-order-payment-proof.dto';
 import { SubmitOrderDTO } from '@app/orders/dto/submit-order.dto';
 import { OrdersRepository } from '@app/orders/repository/orders.repository';
 import { OrdersService } from '@app/orders/service/orders.service';
 import { IProductsService } from '@app/products/service/interface/products-service.interface';
 import { ProductsService } from '@app/products/service/products.service';
+import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { OrderStatus } from '@shared/enum/order-status.enum';
@@ -25,9 +30,11 @@ describe('OrdersService', () => {
   let ordersRepository: OrdersRepository;
   let cartsService: CartsService;
   let productsService: ProductsService;
+  let filesService: FilesService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [ConfigModule],
       providers: [
         OrdersService,
         {
@@ -48,6 +55,12 @@ describe('OrdersService', () => {
           } as IProductsService,
         },
         {
+          provide: FilesService,
+          useValue: {
+            createFile: jest.fn(),
+          } as IFilesService,
+        },
+        {
           provide: getRepositoryToken(OrdersRepository),
           useClass: OrdersRepository,
         },
@@ -60,6 +73,7 @@ describe('OrdersService', () => {
     );
     cartsService = module.get<CartsService>(CartsService);
     productsService = module.get<ProductsService>(ProductsService);
+    filesService = module.get<FilesService>(FilesService);
   });
 
   it('should be defined', () => {
@@ -67,6 +81,7 @@ describe('OrdersService', () => {
     expect(ordersRepository).toBeDefined();
     expect(cartsService).toBeDefined();
     expect(productsService).toBeDefined();
+    expect(filesService).toBeDefined();
   });
 
   describe('createOrder()', () => {
@@ -516,6 +531,77 @@ describe('OrdersService', () => {
         .mockImplementation(() => Promise.reject('Failed Submit Order'));
       try {
         const data = await ordersService.submitOrder(argument);
+        expect(data).toEqual(expectedResult);
+      } catch (error) {
+        expect(error).toEqual(expectedError);
+      }
+    });
+  });
+
+  describe('submitOrderPaymentProof()', () => {
+    it('should successfully submit order payment proof', async () => {
+      const argument: SubmitOrderPaymentProofDTO = {
+        id: randomUUID(),
+        mimeType: 'pdf',
+        originalName: 'a.pdf',
+        path: 'pdf/a.pdf',
+        urlOrigin: 'http://localhost:3000',
+        userId: randomUUID(),
+      };
+      const expectedResult = undefined;
+      const expectedError = undefined;
+      jest
+        .spyOn(ordersRepository, 'findOrderWithUserId')
+        .mockImplementation(() =>
+          Promise.resolve(
+            plainToClass(OrderDTO, {
+              id: argument.id,
+              title: 'Order 5',
+              paymentProofLink: null,
+              status: OrderStatus.Submitted,
+              userId: argument.userId,
+            } as Partial<OrderDTO>),
+          ),
+        );
+      jest.spyOn(filesService, 'createFile').mockImplementation(() =>
+        Promise.resolve(
+          plainToClass(FileDTO, {
+            id: randomUUID(),
+            mimeType: 'pdf',
+            originalName: 'a.pdf',
+            path: 'pdf/a.pdf',
+            userId: argument.userId,
+          } as Partial<FileDTO>),
+        ),
+      );
+      jest
+        .spyOn(ordersRepository, 'updateOrder')
+        .mockImplementation(() => Promise.resolve(null));
+      try {
+        const data = await ordersService.submitOrderPaymentProof(argument);
+        expect(data).toEqual(expectedResult);
+      } catch (error) {
+        expect(error).toEqual(expectedError);
+      }
+    });
+    it('should failed submit order payment proof', async () => {
+      const argument: SubmitOrderPaymentProofDTO = {
+        id: randomUUID(),
+        mimeType: 'pdf',
+        originalName: 'a.pdf',
+        path: 'pdf/a.pdf',
+        urlOrigin: 'http://localhost:3000',
+        userId: randomUUID(),
+      };
+      const expectedResult = undefined;
+      const expectedError = 'Failed Submit Order Payment Proof';
+      jest
+        .spyOn(ordersRepository, 'findOrderWithUserId')
+        .mockImplementation(() =>
+          Promise.reject('Failed Submit Order Payment Proof'),
+        );
+      try {
+        const data = await ordersService.submitOrderPaymentProof(argument);
         expect(data).toEqual(expectedResult);
       } catch (error) {
         expect(error).toEqual(expectedError);

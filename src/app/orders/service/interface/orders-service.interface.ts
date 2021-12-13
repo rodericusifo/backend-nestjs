@@ -5,6 +5,7 @@ import { ReadAllOrderByAdminDTO } from '@app/orders/dto/read-all-order-by-admin.
 import { ReadAllOrderByCustomerDTO } from '@app/orders/dto/read-all-order-by-customer.dto';
 import { ReadOrderByAdminDTO } from '@app/orders/dto/read-order-by-admin.dto';
 import { ReadOrderByCustomerDTO } from '@app/orders/dto/read-order-by-customer.dto';
+import { SubmitOrderPaymentProofDTO } from '@app/orders/dto/submit-order-payment-proof.dto';
 import { SubmitOrderDTO } from '@app/orders/dto/submit-order.dto';
 import { IReadAllServiceMethodResponse } from '@shared/interface/other/service-method-response/read-all-service-method-response.interface';
 
@@ -19,5 +20,6 @@ export interface IOrdersService {
   readOrderByAdmin(payload: ReadOrderByAdminDTO): Promise<OrderDTO>;
   readOrderByCustomer(payload: ReadOrderByCustomerDTO): Promise<OrderDTO>;
   submitOrder(payload: SubmitOrderDTO);
+  submitOrderPaymentProof(payload: SubmitOrderPaymentProofDTO);
   addProductToOrder(payload: AddProductToOrderDTO);
 }

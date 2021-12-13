@@ -1,20 +1,35 @@
 import { AddProductCustomerOrderBodyRequest } from '@app/orders/controller/request/body/add-product-customer-order-body.request';
 import { CreateCustomerOrderBodyRequest } from '@app/orders/controller/request/body/create-customer-order-body.request';
+import { SubmitOrderPaymentProofByCustomerFileRequest } from '@app/orders/controller/request/file/submit-order-payment-proof-by-customer-file.request';
 import { AddProductCustomerOrderParamRequest } from '@app/orders/controller/request/param/add-product-customer-order-param.request';
 import { DetailOrderByAdminParamRequest } from '@app/orders/controller/request/param/detail-order-by-admin-param.request';
 import { DetailOrderByCustomerParamRequest } from '@app/orders/controller/request/param/detail-order-by-customer-param.request';
 import { SubmitOrderByCustomerParamRequest } from '@app/orders/controller/request/param/submit-order-by-customer-param.request';
+import { SubmitOrderPaymentProofByCustomerParamRequest } from '@app/orders/controller/request/param/submit-order-payment-proof-by-customer-param.request';
 import { ListOrderByAdminQueryRequest } from '@app/orders/controller/request/query/list-order-by-admin-query.request';
 import { ListOrderByCustomerQueryRequest } from '@app/orders/controller/request/query/list-order-by-customer-query.request';
 import { OrdersService } from '@app/orders/service/orders.service';
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  Param,
+  Post,
+  Put,
+  Query,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Response, ResponseStatusCode } from '@response/response.decorator';
 import { IResponse, IResponsePaging } from '@response/response.interface';
 import { ResponseService } from '@response/response.service';
 import { Auth } from '@shared/decorator/auth.decorator';
 import { User } from '@shared/decorator/user.decorator';
 import { Role } from '@shared/enum/role.enum';
+import { IHeaders } from '@shared/interface/other/headers.interface';
 import { UserRequest } from '@shared/request/user/user.request';
 
 @ApiTags('Orders')
@@ -99,6 +114,31 @@ export class OrdersController {
       userId: user.id,
     });
     return this.responseService.success('Submit Order Success');
+  }
+
+  @ResponseStatusCode()
+  @Auth(Role.Customer)
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    type: SubmitOrderPaymentProofByCustomerFileRequest,
+  })
+  @Put(':id/submit-payment-proof/customer')
+  async submitOrderPaymentProofByCustomer(
+    @User() user: UserRequest,
+    @Param() param: SubmitOrderPaymentProofByCustomerParamRequest,
+    @UploadedFile() file: Express.Multer.File,
+    @Headers() headers: IHeaders,
+  ): Promise<IResponse> {
+    await this.ordersService.submitOrderPaymentProof({
+      ...param,
+      mimeType: file.mimetype,
+      originalName: file.originalname,
+      path: file.path,
+      urlOrigin: headers.origin,
+      userId: user.id,
+    });
+    return this.responseService.success('Submit Payment Proof Order Success');
   }
 
   @ResponseStatusCode()

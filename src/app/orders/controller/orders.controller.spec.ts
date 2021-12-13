@@ -1,6 +1,8 @@
 import { CartDTO } from '@app/carts/dto/cart.dto';
 import { CartsService } from '@app/carts/service/carts.service';
 import { ICartsService } from '@app/carts/service/interface/carts-service.interface';
+import { FilesService } from '@app/files/service/files.service';
+import { IFilesService } from '@app/files/service/interface/files-service.interface';
 import { OrdersController } from '@app/orders/controller/orders.controller';
 import { AddProductCustomerOrderBodyRequest } from '@app/orders/controller/request/body/add-product-customer-order-body.request';
 import { CreateCustomerOrderBodyRequest } from '@app/orders/controller/request/body/create-customer-order-body.request';
@@ -8,6 +10,7 @@ import { AddProductCustomerOrderParamRequest } from '@app/orders/controller/requ
 import { DetailOrderByAdminParamRequest } from '@app/orders/controller/request/param/detail-order-by-admin-param.request';
 import { DetailOrderByCustomerParamRequest } from '@app/orders/controller/request/param/detail-order-by-customer-param.request';
 import { SubmitOrderByCustomerParamRequest } from '@app/orders/controller/request/param/submit-order-by-customer-param.request';
+import { SubmitOrderPaymentProofByCustomerParamRequest } from '@app/orders/controller/request/param/submit-order-payment-proof-by-customer-param.request';
 import { ListOrderByAdminQueryRequest } from '@app/orders/controller/request/query/list-order-by-admin-query.request';
 import { ListOrderByCustomerQueryRequest } from '@app/orders/controller/request/query/list-order-by-customer-query.request';
 import { OrderDTO } from '@app/orders/dto/order.dto';
@@ -15,12 +18,14 @@ import { OrdersRepository } from '@app/orders/repository/orders.repository';
 import { OrdersService } from '@app/orders/service/orders.service';
 import { IProductsService } from '@app/products/service/interface/products-service.interface';
 import { ProductsService } from '@app/products/service/products.service';
+import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { IResponse, IResponsePaging } from '@response/response.interface';
 import { ResponseModule } from '@response/response.module';
 import { ResponseService } from '@response/response.service';
 import { Role } from '@shared/enum/role.enum';
+import { IHeaders } from '@shared/interface/other/headers.interface';
 import { IReadAllServiceMethodResponse } from '@shared/interface/other/service-method-response/read-all-service-method-response.interface';
 import { UserRequest } from '@shared/request/user/user.request';
 import { plainToClass } from 'class-transformer';
@@ -33,7 +38,7 @@ describe('OrdersController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [ResponseModule],
+      imports: [ResponseModule, ConfigModule],
       controllers: [OrdersController],
       providers: [
         OrdersService,
@@ -53,6 +58,12 @@ describe('OrdersController', () => {
             readProduct: jest.fn(),
             updateProduct: jest.fn(),
           } as IProductsService,
+        },
+        {
+          provide: FilesService,
+          useValue: {
+            createFile: jest.fn(),
+          } as IFilesService,
         },
         {
           provide: getRepositoryToken(OrdersRepository),
@@ -572,6 +583,83 @@ describe('OrdersController', () => {
         const data = await ordersController.submitOrderByCustomer(
           userArgument,
           paramArgument,
+        );
+        expect(data).toEqual(expectedResult);
+      } catch (error) {
+        expect(error).toEqual(expectedError);
+      }
+    });
+  });
+
+  describe('submitOrderPaymentProofByCustomer()', () => {
+    it('should successfully submit order payment proof by customer', async () => {
+      const paramArgument: SubmitOrderPaymentProofByCustomerParamRequest = {
+        id: randomUUID(),
+      };
+      const userArgument: UserRequest = {
+        id: randomUUID(),
+        email: 'rodericus123@gmail.com',
+        name: 'Rodericus Ifo',
+        roles: [Role.Customer],
+      };
+      const headersArgument: IHeaders = {
+        origin: 'http://localhost:3000',
+      };
+      const fileArgument: any = {
+        path: 'pdf/a.pdf',
+        originalname: 'a.pdf',
+        mimetype: 'pdf',
+      } as Partial<Express.Multer.File>;
+      const expectedResult: IResponse = {
+        message: 'Submit Payment Proof Order Success',
+      };
+      const expectedError = undefined;
+      jest
+        .spyOn(ordersService, 'submitOrderPaymentProof')
+        .mockImplementation(() => Promise.resolve(null));
+      try {
+        const data = await ordersController.submitOrderPaymentProofByCustomer(
+          userArgument,
+          paramArgument,
+          fileArgument,
+          headersArgument,
+        );
+        expect(data).toEqual(expectedResult);
+      } catch (error) {
+        expect(error).toEqual(expectedError);
+      }
+    });
+    it('should failed submit order payment proof by customer', async () => {
+      const paramArgument: SubmitOrderPaymentProofByCustomerParamRequest = {
+        id: randomUUID(),
+      };
+      const userArgument: UserRequest = {
+        id: randomUUID(),
+        email: 'rodericus123@gmail.com',
+        name: 'Rodericus Ifo',
+        roles: [Role.Customer],
+      };
+      const headersArgument: IHeaders = {
+        origin: 'http://localhost:3000',
+      };
+      const fileArgument: any = {
+        path: 'pdf/a.pdf',
+        originalname: 'a.pdf',
+        mimetype: 'pdf',
+      } as Partial<Express.Multer.File>;
+      const expectedResult = undefined;
+      const expectedError = 'Failed Submit Order Payment Proof By Customer';
+      jest
+        .spyOn(ordersService, 'submitOrderPaymentProof')
+        .mockImplementation(() =>
+          Promise.reject('Failed Submit Order Payment Proof By Customer'),
+        );
+      try {
+        const data = await ordersController.submitOrderPaymentProofByCustomer(
+          userArgument,
+          paramArgument,
+          fileArgument,
+          headersArgument,
         );
         expect(data).toEqual(expectedResult);
       } catch (error) {

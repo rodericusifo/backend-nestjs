@@ -1,4 +1,5 @@
 import { CartsService } from '@app/carts/service/carts.service';
+import { FilesService } from '@app/files/service/files.service';
 import { AddProductToOrderDTO } from '@app/orders/dto/add-product-to-order.dto';
 import { CreateOrderDTO } from '@app/orders/dto/create-order.dto';
 import { OrderDTO } from '@app/orders/dto/order.dto';
@@ -11,11 +12,13 @@ import { OrdersRepository } from '@app/orders/repository/orders.repository';
 import { IOrdersService } from '@app/orders/service/interface/orders-service.interface';
 import { ProductsService } from '@app/products/service/products.service';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrderStatus } from '@shared/enum/order-status.enum';
 import { IQuery } from '@shared/interface/other/query.interface';
 import { IReadAllServiceMethodResponse } from '@shared/interface/other/service-method-response/read-all-service-method-response.interface';
 import { plainToClass } from 'class-transformer';
+import { SubmitOrderPaymentProofDTO } from '../dto/submit-order-payment-proof.dto';
 
 @Injectable()
 export class OrdersService implements IOrdersService {
@@ -24,7 +27,10 @@ export class OrdersService implements IOrdersService {
     private readonly ordersRepository: OrdersRepository,
     private readonly cartsService: CartsService,
     private readonly productsService: ProductsService,
+    private readonly filesService: FilesService,
+    private readonly configService: ConfigService,
   ) {}
+
   async createOrder(payload: CreateOrderDTO) {
     const orderDTO = plainToClass(OrderDTO, payload);
     await this.ordersRepository.saveOrder(orderDTO);
@@ -153,6 +159,31 @@ export class OrdersService implements IOrdersService {
       });
     });
     foundOrderDTO.changeOrderStatus(OrderStatus.Submitted);
+    await this.ordersRepository.updateOrder({
+      ...foundOrderDTO,
+      userId: orderDTO.userId,
+    });
+  }
+
+  async submitOrderPaymentProof(payload: SubmitOrderPaymentProofDTO) {
+    const orderDTO = plainToClass(OrderDTO, {
+      id: payload.id,
+      userId: payload.userId,
+    });
+    const foundOrderDTO = await this.ordersRepository.findOrderWithUserId(
+      orderDTO,
+    );
+    const savedPaymentProofDTO = await this.filesService.createFile({
+      mimeType: payload.mimeType,
+      originalName: payload.originalName,
+      path: payload.path,
+      userId: payload.userId,
+    });
+    foundOrderDTO.setPaymentProofLink(
+      `${payload.urlOrigin}${this.configService.get(
+        'app.prefix',
+      )}/files/payment-proof/${savedPaymentProofDTO.id}/download`,
+    );
     await this.ordersRepository.updateOrder({
       ...foundOrderDTO,
       userId: orderDTO.userId,

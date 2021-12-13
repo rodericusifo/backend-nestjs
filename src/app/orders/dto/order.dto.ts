@@ -69,4 +69,8 @@ export class OrderDTO {
   changeOrderStatus(status: OrderStatus) {
     this.status = status;
   }
+
+  setPaymentProofLink(link: string) {
+    this.paymentProofLink = link;
+  }
 }

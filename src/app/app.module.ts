@@ -1,21 +1,22 @@
 import { AuthModule } from '@app/auth/auth.module';
 import { CartsModule } from '@app/carts/carts.module';
+import { FilesModule } from '@app/files/files.module';
 import { OrdersModule } from '@app/orders/orders.module';
 import { ProductsModule } from '@app/products/products.module';
 import { SeedsModule } from '@app/seeds/seeds.module';
 import { UsersModule } from '@app/users/users.module';
 import Configuration from '@config/configuration';
+import { multerConfiguration } from '@config/multer.configuration';
 import { LoggerModule } from '@logger/logger.module';
 import { LoggerService } from '@logger/logger.service';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MulterModule } from '@nestjs/platform-express';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ResponseModule } from '@response/response.module';
 import { WinstonModule } from 'nest-winston';
 
 @Module({
-  controllers: [],
-  providers: [],
   imports: [
     ConfigModule.forRoot({
       load: [Configuration],
@@ -51,6 +52,7 @@ import { WinstonModule } from 'nest-winston';
     UsersModule,
     OrdersModule,
     CartsModule,
+    FilesModule,
   ],
 })
 export class AppModule {}
