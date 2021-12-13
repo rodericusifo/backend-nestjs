@@ -7,7 +7,7 @@ export class RegisterBodyRequest {
   @IsString()
   readonly name: string;
 
-  @ApiProperty({ example: 'John@gmail.com' })
+  @ApiProperty({ example: 'john@gmail.com' })
   @IsNotEmpty()
   @IsEmail()
   readonly email: string;
