@@ -45,7 +45,7 @@ export class Order {
   @Column({ name: 'address', type: 'text', nullable: false })
   address: string;
 
-  @Column({ name: 'userId', type: 'text', nullable: false })
+  @Column({ name: 'userId', type: 'text', nullable: false, select: false })
   userId: string;
 
   @CreateDateColumn()
@@ -54,6 +54,6 @@ export class Order {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({ select: false })
   deletedAt?: Date;
 }

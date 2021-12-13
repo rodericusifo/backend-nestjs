@@ -27,7 +27,7 @@ export class UsersRepository
     await this.save(user);
   }
 
-  async findUserForLogin(userDTO: Partial<UserDTO>): Promise<UserDTO> {
+  async findUserWithEmail(userDTO: Partial<UserDTO>): Promise<UserDTO> {
     const user = UsersMapper.DTOToEntity(userDTO);
     const foundUser = await this.findOne({ email: user.email });
     if (!foundUser) {

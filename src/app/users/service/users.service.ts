@@ -35,7 +35,7 @@ export class UsersService implements IUsersService {
 
   async readUserForLogin(payload: ReadUserForLoginDTO): Promise<UserDTO> {
     const userDTO = plainToClass(UserDTO, payload);
-    const foundUserDTO = await this.usersRepository.findUserForLogin(userDTO);
+    const foundUserDTO = await this.usersRepository.findUserWithEmail(userDTO);
     await foundUserDTO.decryptPasswordAndValidate(userDTO.password);
     return foundUserDTO;
   }

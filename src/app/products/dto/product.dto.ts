@@ -1,5 +1,4 @@
 import { BadRequestException } from '@nestjs/common';
-import { Exclude } from 'class-transformer';
 import {
   IsDateString,
   IsNumber,
@@ -42,7 +41,6 @@ export class ProductDTO {
 
   @IsOptional()
   @IsDateString()
-  @Exclude()
   deletedAt?: Date;
 
   checkAvailability() {

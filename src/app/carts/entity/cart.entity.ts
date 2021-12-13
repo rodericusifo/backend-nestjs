@@ -26,7 +26,7 @@ export class Cart {
   })
   product: Product;
 
-  @Column({ name: 'orderId', type: 'text', nullable: false })
+  @Column({ name: 'orderId', type: 'text', nullable: false, select: false })
   orderId: string;
 
   @CreateDateColumn()
@@ -35,6 +35,6 @@ export class Cart {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({ select: false })
   deletedAt?: Date;
 }

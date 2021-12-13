@@ -1,15 +1,14 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { Role } from '@shared/enum/role.enum';
-import { Exclude } from 'class-transformer';
+import * as bcrypt from 'bcrypt';
 import {
-  IsString,
-  IsOptional,
   IsDateString,
-  IsUUID,
   IsEmail,
   IsEnum,
+  IsOptional,
+  IsString,
+  IsUUID,
 } from 'class-validator';
-import * as bcrypt from 'bcrypt';
 
 export class UserDTO {
   @IsOptional()
@@ -42,7 +41,6 @@ export class UserDTO {
 
   @IsOptional()
   @IsDateString()
-  @Exclude()
   deletedAt?: Date;
 
   setAsAdmin() {

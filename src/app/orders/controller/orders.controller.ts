@@ -1,8 +1,9 @@
 import { AddProductCustomerOrderBodyRequest } from '@app/orders/controller/request/body/add-product-customer-order-body.request';
 import { CreateCustomerOrderBodyRequest } from '@app/orders/controller/request/body/create-customer-order-body.request';
 import { AddProductCustomerOrderParamRequest } from '@app/orders/controller/request/param/add-product-customer-order-param.request';
+import { DetailOrderByAdminParamRequest } from '@app/orders/controller/request/param/detail-order-by-admin-param.request';
 import { OrdersService } from '@app/orders/service/orders.service';
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Response, ResponseStatusCode } from '@response/response.decorator';
 import { IResponse } from '@response/response.interface';
@@ -45,5 +46,17 @@ export class OrdersController {
       userId: user.id,
     });
     return this.responseService.success('Successfully Add Product To Order');
+  }
+
+  @ResponseStatusCode()
+  @Auth(Role.Admin)
+  @Get(':id/admin/detail')
+  async detailOrderByAdmin(
+    @Param() param: DetailOrderByAdminParamRequest,
+  ): Promise<IResponse> {
+    const result = await this.ordersService.readOrderByAdmin({
+      ...param,
+    });
+    return this.responseService.success('Order Found', result);
   }
 }

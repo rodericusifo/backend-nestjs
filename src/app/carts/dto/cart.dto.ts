@@ -1,5 +1,4 @@
 import { ProductDTO } from '@app/products/dto/product.dto';
-import { Exclude } from 'class-transformer';
 import {
   IsDateString,
   IsInstance,
@@ -42,7 +41,6 @@ export class CartDTO {
 
   @IsOptional()
   @IsDateString()
-  @Exclude()
   deletedAt?: Date;
 
   calculateAmount() {

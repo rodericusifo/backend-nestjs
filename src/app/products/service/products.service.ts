@@ -1,6 +1,7 @@
 import { CreateProductDTO } from '@app/products/dto/create-product.dto';
 import { ProductDTO } from '@app/products/dto/product.dto';
 import { ReadAllProductDTO } from '@app/products/dto/read-all-product.dto';
+import { ReadProductDTO } from '@app/products/dto/read-product.dto';
 import { ProductsRepository } from '@app/products/repository/products.repository';
 import { IProductsService } from '@app/products/service/interface/products-service.interface';
 import { Injectable } from '@nestjs/common';
@@ -8,7 +9,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { IQuery } from '@shared/interface/other/query.interface';
 import { IReadAllServiceMethodResponse } from '@shared/interface/other/service-method-response/read-all-service-method-response.interface';
 import { plainToClass } from 'class-transformer';
-import { ReadProductDTO } from '../dto/read-product.dto';
 
 @Injectable()
 export class ProductsService implements IProductsService {

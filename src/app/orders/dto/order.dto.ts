@@ -1,10 +1,12 @@
+import { CartDTO } from '@app/carts/dto/cart.dto';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { OrderStatus } from '@shared/enum/order-status.enum';
-import { Exclude } from 'class-transformer';
 import {
+  IsArray,
   IsDateString,
   IsEmail,
   IsEnum,
+  IsInstance,
   IsMobilePhone,
   IsOptional,
   IsString,
@@ -45,6 +47,11 @@ export class OrderDTO {
   address?: string;
 
   @IsOptional()
+  @IsArray()
+  @IsInstance(CartDTO, { each: true })
+  carts?: CartDTO[];
+
+  @IsOptional()
   @IsUUID()
   userId?: string;
 
@@ -58,6 +65,5 @@ export class OrderDTO {
 
   @IsOptional()
   @IsDateString()
-  @Exclude()
   deletedAt?: Date;
 }

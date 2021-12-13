@@ -155,7 +155,7 @@ describe('UsersService', () => {
         deletedAt: null,
       });
       const expectedError = undefined;
-      jest.spyOn(usersRepository, 'findUserForLogin').mockImplementation(() =>
+      jest.spyOn(usersRepository, 'findUserWithEmail').mockImplementation(() =>
         Promise.resolve(
           plainToClass(UserDTO, {
             id: '1112222',
@@ -186,7 +186,7 @@ describe('UsersService', () => {
       const expectedResult = undefined;
       const expectedError = 'Failed Read User For Login';
       jest
-        .spyOn(usersRepository, 'findUserForLogin')
+        .spyOn(usersRepository, 'findUserWithEmail')
         .mockImplementation(() => Promise.reject('Failed Read User For Login'));
       jest
         .spyOn(bcrypt, 'compare')
