@@ -7,15 +7,17 @@ import { CreateCustomerOrderBodyRequest } from '@app/orders/controller/request/b
 import { AddProductCustomerOrderParamRequest } from '@app/orders/controller/request/param/add-product-customer-order-param.request';
 import { DetailOrderByAdminParamRequest } from '@app/orders/controller/request/param/detail-order-by-admin-param.request';
 import { DetailOrderByCustomerParamRequest } from '@app/orders/controller/request/param/detail-order-by-customer-param.request';
+import { ListOrderByAdminQueryRequest } from '@app/orders/controller/request/query/list-order-by-admin-query.request';
 import { OrderDTO } from '@app/orders/dto/order.dto';
 import { OrdersRepository } from '@app/orders/repository/orders.repository';
 import { OrdersService } from '@app/orders/service/orders.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { IResponse } from '@response/response.interface';
+import { IResponse, IResponsePaging } from '@response/response.interface';
 import { ResponseModule } from '@response/response.module';
 import { ResponseService } from '@response/response.service';
 import { Role } from '@shared/enum/role.enum';
+import { IReadAllServiceMethodResponse } from '@shared/interface/other/service-method-response/read-all-service-method-response.interface';
 import { UserRequest } from '@shared/request/user/user.request';
 import { plainToClass } from 'class-transformer';
 import { randomUUID } from 'crypto';
@@ -321,6 +323,84 @@ describe('OrdersController', () => {
           userArgument,
           paramArgument,
         );
+        expect(data).toEqual(expectedResult);
+      } catch (error) {
+        expect(error).toEqual(expectedError);
+      }
+    });
+  });
+
+  describe('listOrderByAdmin()', () => {
+    it('should successfully get list order by admin', async () => {
+      const queryArgument: ListOrderByAdminQueryRequest = {
+        limit: 5,
+        page: 1,
+      };
+      const UUIDv1 = randomUUID();
+      const UUIDv2 = randomUUID();
+      const expectedResult: IResponsePaging = {
+        message: 'All Order Found',
+        total_data: 1,
+        total_page: Math.ceil(1 / queryArgument.limit),
+        current_page: queryArgument.page,
+        per_page: 1,
+        data: [
+          plainToClass(OrderDTO, {
+            id: UUIDv1,
+            title: 'Order 2',
+            carts: [
+              plainToClass(CartDTO, {
+                id: UUIDv2,
+                quantity: 3,
+              } as Partial<CartDTO>),
+            ],
+          } as Partial<OrderDTO>),
+        ],
+      };
+      const expectedError = undefined;
+      jest.spyOn(ordersService, 'readAllOrderByAdmin').mockImplementation(() =>
+        Promise.resolve({
+          findAll: [
+            plainToClass(OrderDTO, {
+              id: UUIDv1,
+              title: 'Order 1',
+            } as Partial<OrderDTO>),
+          ],
+          findAllPagination: [
+            plainToClass(OrderDTO, {
+              id: UUIDv1,
+              title: 'Order 2',
+              carts: [
+                plainToClass(CartDTO, {
+                  id: UUIDv2,
+                  quantity: 3,
+                } as Partial<CartDTO>),
+              ],
+            } as Partial<OrderDTO>),
+          ],
+        } as IReadAllServiceMethodResponse<OrderDTO[]>),
+      );
+      try {
+        const data = await ordersController.listOrderByAdmin(queryArgument);
+        expect(data).toEqual(expectedResult);
+      } catch (error) {
+        expect(error).toEqual(expectedError);
+      }
+    });
+    it('should failed get list order by admin', async () => {
+      const queryArgument: ListOrderByAdminQueryRequest = {
+        limit: 5,
+        page: 1,
+      };
+      const expectedResult = undefined;
+      const expectedError = 'Failed Get List Order By Admin';
+      jest
+        .spyOn(ordersService, 'readAllOrderByAdmin')
+        .mockImplementation(() =>
+          Promise.reject('Failed Get List Order By Admin'),
+        );
+      try {
+        const data = await ordersService.readAllOrderByAdmin(queryArgument);
         expect(data).toEqual(expectedResult);
       } catch (error) {
         expect(error).toEqual(expectedError);

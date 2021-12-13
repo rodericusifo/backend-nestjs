@@ -7,7 +7,10 @@ import { OrdersRepository } from '@app/orders/repository/orders.repository';
 import { IOrdersService } from '@app/orders/service/interface/orders-service.interface';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { IQuery } from '@shared/interface/other/query.interface';
+import { IReadAllServiceMethodResponse } from '@shared/interface/other/service-method-response/read-all-service-method-response.interface';
 import { plainToClass } from 'class-transformer';
+import { ReadAllOrderByAdminDTO } from '../dto/read-all-order-by-admin.dto';
 import { ReadOrderByCustomerDTO } from '../dto/read-order-by-customer.dto';
 
 @Injectable()
@@ -62,5 +65,31 @@ export class OrdersService implements IOrdersService {
       orderId: foundOrderDTO.id,
     });
     return foundOrderDTO;
+  }
+
+  async readAllOrderByAdmin(
+    payload: ReadAllOrderByAdminDTO,
+  ): Promise<IReadAllServiceMethodResponse<OrderDTO[]>> {
+    const query: IQuery = {
+      limit: payload.limit,
+      page: payload.page,
+      sortingBy: payload.sortingBy,
+      sortingType: payload.sortingType,
+    };
+    const orderDTOs = await this.ordersRepository.findAllOrder();
+    let orderDTOsPagination =
+      await this.ordersRepository.findAllOrderPagination(query);
+    orderDTOsPagination = await Promise.all(
+      orderDTOsPagination.map(async (orderDTO) => {
+        orderDTO.carts = await this.cartsService.readAllCart({
+          orderId: orderDTO.id,
+        });
+        return orderDTO;
+      }),
+    );
+    return {
+      findAll: orderDTOs,
+      findAllPagination: orderDTOsPagination,
+    };
   }
 }

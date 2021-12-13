@@ -4,15 +4,16 @@ import { AddProductCustomerOrderParamRequest } from '@app/orders/controller/requ
 import { DetailOrderByAdminParamRequest } from '@app/orders/controller/request/param/detail-order-by-admin-param.request';
 import { DetailOrderByCustomerParamRequest } from '@app/orders/controller/request/param/detail-order-by-customer-param.request';
 import { OrdersService } from '@app/orders/service/orders.service';
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Response, ResponseStatusCode } from '@response/response.decorator';
-import { IResponse } from '@response/response.interface';
+import { IResponse, IResponsePaging } from '@response/response.interface';
 import { ResponseService } from '@response/response.service';
 import { Auth } from '@shared/decorator/auth.decorator';
 import { User } from '@shared/decorator/user.decorator';
 import { Role } from '@shared/enum/role.enum';
 import { UserRequest } from '@shared/request/user/user.request';
+import { ListOrderByAdminQueryRequest } from './request/query/list-order-by-admin-query.request';
 
 @ApiTags('Orders')
 @Controller('orders')
@@ -61,6 +62,25 @@ export class OrdersController {
       userId: user.id,
     });
     return this.responseService.success('Order Found', result);
+  }
+
+  @ResponseStatusCode()
+  @Auth(Role.Admin)
+  @Get('/list/admin')
+  async listOrderByAdmin(
+    @Query() query: ListOrderByAdminQueryRequest,
+  ): Promise<IResponsePaging> {
+    const result = await this.ordersService.readAllOrderByAdmin({
+      ...query,
+    });
+    return this.responseService.paging(
+      'All Order Found',
+      result.findAll.length,
+      Math.ceil(result.findAll.length / query.limit),
+      query.page,
+      result.findAllPagination.length,
+      result.findAllPagination,
+    );
   }
 
   @ResponseStatusCode()
