@@ -5,10 +5,10 @@ export class LoginBodyRequest {
   @ApiProperty({ example: 'John@gmail.com' })
   @IsNotEmpty()
   @IsEmail()
-  email: string;
+  readonly email: string;
 
   @ApiProperty({ example: '12345' })
   @IsNotEmpty()
   @IsString()
-  password: string;
+  readonly password: string;
 }

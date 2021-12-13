@@ -1,5 +1,4 @@
 import { CartDTO } from '@app/carts/dto/cart.dto';
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { OrderStatus } from '@shared/enum/order-status.enum';
 import {
   IsArray,

@@ -3,9 +3,9 @@ import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 export class ReadUserForLoginDTO {
   @IsNotEmpty()
   @IsEmail()
-  email: string;
+  readonly email: string;
 
   @IsNotEmpty()
   @IsString()
-  password: string;
+  readonly password: string;
 }

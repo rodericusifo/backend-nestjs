@@ -11,6 +11,7 @@ import { IQuery } from '@shared/interface/other/query.interface';
 import { IReadAllServiceMethodResponse } from '@shared/interface/other/service-method-response/read-all-service-method-response.interface';
 import { plainToClass } from 'class-transformer';
 import { ReadAllOrderByAdminDTO } from '../dto/read-all-order-by-admin.dto';
+import { ReadAllOrderByCustomerDTO } from '../dto/read-all-order-by-customer.dto';
 import { ReadOrderByCustomerDTO } from '../dto/read-order-by-customer.dto';
 
 @Injectable()
@@ -85,6 +86,40 @@ export class OrdersService implements IOrdersService {
           orderId: orderDTO.id,
         });
         return orderDTO;
+      }),
+    );
+    return {
+      findAll: orderDTOs,
+      findAllPagination: orderDTOsPagination,
+    };
+  }
+
+  async readAllOrderByCustomer(
+    payload: ReadAllOrderByCustomerDTO,
+  ): Promise<IReadAllServiceMethodResponse<OrderDTO[]>> {
+    const orderDTO = plainToClass(OrderDTO, {
+      userId: payload.userId,
+    });
+    const query: IQuery = {
+      limit: payload.limit,
+      page: payload.page,
+      sortingBy: payload.sortingBy,
+      sortingType: payload.sortingType,
+    };
+    const orderDTOs = await this.ordersRepository.findAllOrderWithUserId(
+      orderDTO,
+    );
+    let orderDTOsPagination =
+      await this.ordersRepository.findAllOrderPaginationWithUserId(
+        query,
+        orderDTO,
+      );
+    orderDTOsPagination = await Promise.all(
+      orderDTOsPagination.map(async (orderDTOSingle) => {
+        orderDTOSingle.carts = await this.cartsService.readAllCart({
+          orderId: orderDTOSingle.id,
+        });
+        return orderDTOSingle;
       }),
     );
     return {

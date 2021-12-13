@@ -5,25 +5,25 @@ export class CreateCustomerOrderBodyRequest {
   @ApiProperty({ example: 'Order 1' })
   @IsNotEmpty()
   @IsString()
-  title: string;
+  readonly title: string;
 
   @ApiProperty({ example: 'John Doe' })
   @IsNotEmpty()
   @IsString()
-  name: string;
+  readonly name: string;
 
   @ApiProperty({ example: '087678900123' })
   @IsNotEmpty()
   @IsMobilePhone()
-  phoneNumber: string;
+  readonly phoneNumber: string;
 
   @ApiProperty({ example: 'john@gmail.com' })
   @IsNotEmpty()
   @IsEmail()
-  email: string;
+  readonly email: string;
 
   @ApiProperty({ example: 'John Street' })
   @IsNotEmpty()
   @IsString()
-  address: string;
+  readonly address: string;
 }

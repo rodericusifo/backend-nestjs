@@ -5,6 +5,7 @@ import { AddProductToOrderDTO } from '@app/orders/dto/add-product-to-order.dto';
 import { CreateOrderDTO } from '@app/orders/dto/create-order.dto';
 import { OrderDTO } from '@app/orders/dto/order.dto';
 import { ReadAllOrderByAdminDTO } from '@app/orders/dto/read-all-order-by-admin.dto';
+import { ReadAllOrderByCustomerDTO } from '@app/orders/dto/read-all-order-by-customer.dto';
 import { ReadOrderByAdminDTO } from '@app/orders/dto/read-order-by-admin.dto';
 import { ReadOrderByCustomerDTO } from '@app/orders/dto/read-order-by-customer.dto';
 import { OrdersRepository } from '@app/orders/repository/orders.repository';
@@ -344,6 +345,97 @@ describe('OrdersService', () => {
         );
       try {
         const data = await ordersService.readAllOrderByAdmin(argument);
+        expect(data).toEqual(expectedResult);
+      } catch (error) {
+        expect(error).toEqual(expectedError);
+      }
+    });
+  });
+
+  describe('readAllOrderByCustomer()', () => {
+    it('should successfully read all order by customer', async () => {
+      const argument: ReadAllOrderByCustomerDTO = {
+        limit: 5,
+        page: 1,
+        userId: randomUUID(),
+      };
+      const UUIDv1 = randomUUID();
+      const UUIDv2 = randomUUID();
+      const expectedResult: IReadAllServiceMethodResponse<OrderDTO[]> = {
+        findAll: [
+          plainToClass(OrderDTO, {
+            id: UUIDv1,
+            title: 'Order 1',
+            userId: argument.userId,
+          } as Partial<OrderDTO>),
+        ],
+        findAllPagination: [
+          plainToClass(OrderDTO, {
+            id: UUIDv1,
+            title: 'Order 2',
+            userId: argument.userId,
+            carts: [
+              plainToClass(CartDTO, {
+                id: UUIDv2,
+                quantity: 4,
+              } as Partial<CartDTO>),
+            ],
+          } as Partial<OrderDTO>),
+        ],
+      };
+      const expectedError = undefined;
+      jest
+        .spyOn(ordersRepository, 'findAllOrderWithUserId')
+        .mockImplementation(() =>
+          Promise.resolve([
+            plainToClass(OrderDTO, {
+              id: UUIDv1,
+              title: 'Order 1',
+              userId: argument.userId,
+            } as Partial<OrderDTO>),
+          ]),
+        );
+      jest
+        .spyOn(ordersRepository, 'findAllOrderPaginationWithUserId')
+        .mockImplementation(() =>
+          Promise.resolve([
+            plainToClass(OrderDTO, {
+              id: UUIDv1,
+              title: 'Order 2',
+              userId: argument.userId,
+            } as Partial<OrderDTO>),
+          ]),
+        );
+      jest.spyOn(cartsService, 'readAllCart').mockImplementation(() =>
+        Promise.resolve([
+          plainToClass(CartDTO, {
+            id: UUIDv2,
+            quantity: 4,
+          } as Partial<CartDTO>),
+        ]),
+      );
+      try {
+        const data = await ordersService.readAllOrderByCustomer(argument);
+        expect(data).toEqual(expectedResult);
+      } catch (error) {
+        expect(error).toEqual(expectedError);
+      }
+    });
+    it('should failed read all order by customer', async () => {
+      const argument: ReadAllOrderByCustomerDTO = {
+        limit: 5,
+        page: 1,
+        userId: randomUUID(),
+      };
+      const expectedResult = undefined;
+      const expectedError = 'Failed Read All Order By Customer';
+      jest
+        .spyOn(ordersRepository, 'findAllOrderWithUserId')
+        .mockImplementation(() =>
+          Promise.reject('Failed Read All Order By Customer'),
+        );
+      try {
+        const data = await ordersService.readAllOrderByCustomer(argument);
         expect(data).toEqual(expectedResult);
       } catch (error) {
         expect(error).toEqual(expectedError);

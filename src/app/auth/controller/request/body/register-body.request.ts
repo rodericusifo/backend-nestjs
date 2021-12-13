@@ -5,15 +5,15 @@ export class RegisterBodyRequest {
   @ApiProperty({ example: 'John Doe' })
   @IsNotEmpty()
   @IsString()
-  name: string;
+  readonly name: string;
 
   @ApiProperty({ example: 'John@gmail.com' })
   @IsNotEmpty()
   @IsEmail()
-  email: string;
+  readonly email: string;
 
   @ApiProperty({ example: '12345' })
   @IsNotEmpty()
   @IsString()
-  password: string;
+  readonly password: string;
 }

@@ -6,5 +6,5 @@ export class DetailOrderByCustomerParamRequest {
   @ApiProperty({ example: randomUUID() })
   @IsNotEmpty()
   @IsUUID()
-  id: string;
+  readonly id: string;
 }

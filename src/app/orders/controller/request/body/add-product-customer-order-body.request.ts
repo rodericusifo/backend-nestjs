@@ -7,10 +7,10 @@ export class AddProductCustomerOrderBodyRequest {
   @IsNotEmpty()
   @IsNumber()
   @Min(1)
-  quantity: number;
+  readonly quantity: number;
 
   @ApiProperty({ example: randomUUID() })
   @IsNotEmpty()
   @IsUUID()
-  productId: string;
+  readonly productId: string;
 }

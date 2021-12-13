@@ -9,25 +9,25 @@ import {
 export class CreateOrderDTO {
   @IsNotEmpty()
   @IsString()
-  title: string;
+  readonly title: string;
 
   @IsNotEmpty()
   @IsString()
-  name: string;
+  readonly name: string;
 
   @IsNotEmpty()
   @IsMobilePhone()
-  phoneNumber: string;
+  readonly phoneNumber: string;
 
   @IsNotEmpty()
   @IsEmail()
-  email: string;
+  readonly email: string;
 
   @IsNotEmpty()
   @IsString()
-  address: string;
+  readonly address: string;
 
   @IsNotEmpty()
   @IsUUID()
-  userId: string;
+  readonly userId: string;
 }

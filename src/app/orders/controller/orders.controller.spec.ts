@@ -8,6 +8,7 @@ import { AddProductCustomerOrderParamRequest } from '@app/orders/controller/requ
 import { DetailOrderByAdminParamRequest } from '@app/orders/controller/request/param/detail-order-by-admin-param.request';
 import { DetailOrderByCustomerParamRequest } from '@app/orders/controller/request/param/detail-order-by-customer-param.request';
 import { ListOrderByAdminQueryRequest } from '@app/orders/controller/request/query/list-order-by-admin-query.request';
+import { ListOrderByCustomerQueryRequest } from '@app/orders/controller/request/query/list-order-by-customer-query.request';
 import { OrderDTO } from '@app/orders/dto/order.dto';
 import { OrdersRepository } from '@app/orders/repository/orders.repository';
 import { OrdersService } from '@app/orders/service/orders.service';
@@ -400,7 +401,108 @@ describe('OrdersController', () => {
           Promise.reject('Failed Get List Order By Admin'),
         );
       try {
-        const data = await ordersService.readAllOrderByAdmin(queryArgument);
+        const data = await ordersController.listOrderByAdmin(queryArgument);
+        expect(data).toEqual(expectedResult);
+      } catch (error) {
+        expect(error).toEqual(expectedError);
+      }
+    });
+  });
+
+  describe('listOrderByCustomer()', () => {
+    it('should successfully get list order by customer', async () => {
+      const queryArgument: ListOrderByCustomerQueryRequest = {
+        limit: 5,
+        page: 1,
+      };
+      const userArgument: UserRequest = {
+        id: randomUUID(),
+        email: 'rodericus123@gmail.com',
+        name: 'Rodericus Ifo',
+        roles: [Role.Customer],
+      };
+      const UUIDv1 = randomUUID();
+      const UUIDv2 = randomUUID();
+      const expectedResult: IResponsePaging = {
+        message: 'All Order Found',
+        total_data: 1,
+        total_page: Math.ceil(1 / queryArgument.limit),
+        current_page: queryArgument.page,
+        per_page: 1,
+        data: [
+          plainToClass(OrderDTO, {
+            id: UUIDv1,
+            title: 'Order 2',
+            userId: userArgument.id,
+            carts: [
+              plainToClass(CartDTO, {
+                id: UUIDv2,
+                quantity: 4,
+              } as Partial<CartDTO>),
+            ],
+          } as Partial<OrderDTO>),
+        ],
+      };
+      const expectedError = undefined;
+      jest
+        .spyOn(ordersService, 'readAllOrderByCustomer')
+        .mockImplementation(() =>
+          Promise.resolve({
+            findAll: [
+              plainToClass(OrderDTO, {
+                id: UUIDv1,
+                title: 'Order 1',
+                userId: userArgument.id,
+              } as Partial<OrderDTO>),
+            ],
+            findAllPagination: [
+              plainToClass(OrderDTO, {
+                id: UUIDv1,
+                title: 'Order 2',
+                userId: userArgument.id,
+                carts: [
+                  plainToClass(CartDTO, {
+                    id: UUIDv2,
+                    quantity: 4,
+                  } as Partial<CartDTO>),
+                ],
+              } as Partial<OrderDTO>),
+            ],
+          } as IReadAllServiceMethodResponse<OrderDTO[]>),
+        );
+      try {
+        const data = await ordersController.listOrderByCustomer(
+          userArgument,
+          queryArgument,
+        );
+        expect(data).toEqual(expectedResult);
+      } catch (error) {
+        expect(error).toEqual(expectedError);
+      }
+    });
+    it('should failed get list order by customer', async () => {
+      const queryArgument: ListOrderByCustomerQueryRequest = {
+        limit: 5,
+        page: 1,
+      };
+      const userArgument: UserRequest = {
+        id: randomUUID(),
+        email: 'rodericus123@gmail.com',
+        name: 'Rodericus Ifo',
+        roles: [Role.Customer],
+      };
+      const expectedResult = undefined;
+      const expectedError = 'Failed Get List Order By Customer';
+      jest
+        .spyOn(ordersService, 'readAllOrderByCustomer')
+        .mockImplementation(() =>
+          Promise.reject('Failed Get List Order By Customer'),
+        );
+      try {
+        const data = await ordersController.listOrderByCustomer(
+          userArgument,
+          queryArgument,
+        );
         expect(data).toEqual(expectedResult);
       } catch (error) {
         expect(error).toEqual(expectedError);

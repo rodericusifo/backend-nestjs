@@ -3,6 +3,7 @@ import { CreateCustomerOrderBodyRequest } from '@app/orders/controller/request/b
 import { AddProductCustomerOrderParamRequest } from '@app/orders/controller/request/param/add-product-customer-order-param.request';
 import { DetailOrderByAdminParamRequest } from '@app/orders/controller/request/param/detail-order-by-admin-param.request';
 import { DetailOrderByCustomerParamRequest } from '@app/orders/controller/request/param/detail-order-by-customer-param.request';
+import { ListOrderByAdminQueryRequest } from '@app/orders/controller/request/query/list-order-by-admin-query.request';
 import { OrdersService } from '@app/orders/service/orders.service';
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
@@ -13,7 +14,7 @@ import { Auth } from '@shared/decorator/auth.decorator';
 import { User } from '@shared/decorator/user.decorator';
 import { Role } from '@shared/enum/role.enum';
 import { UserRequest } from '@shared/request/user/user.request';
-import { ListOrderByAdminQueryRequest } from './request/query/list-order-by-admin-query.request';
+import { ListOrderByCustomerQueryRequest } from './request/query/list-order-by-customer-query.request';
 
 @ApiTags('Orders')
 @Controller('orders')
@@ -48,6 +49,27 @@ export class OrdersController {
       userId: user.id,
     });
     return this.responseService.success('Successfully Add Product To Order');
+  }
+
+  @ResponseStatusCode()
+  @Auth(Role.Customer)
+  @Get('/list/customer')
+  async listOrderByCustomer(
+    @User() user: UserRequest,
+    @Query() query: ListOrderByCustomerQueryRequest,
+  ): Promise<IResponsePaging> {
+    const result = await this.ordersService.readAllOrderByCustomer({
+      ...query,
+      userId: user.id,
+    });
+    return this.responseService.paging(
+      'All Order Found',
+      result.findAll.length,
+      Math.ceil(result.findAll.length / query.limit),
+      query.page,
+      result.findAllPagination.length,
+      result.findAllPagination,
+    );
   }
 
   @ResponseStatusCode()
