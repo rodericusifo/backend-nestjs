@@ -1,22 +1,41 @@
+import { AuthModule } from '@app/auth/auth.module';
+import { CartsModule } from '@app/carts/carts.module';
+import { OrdersModule } from '@app/orders/orders.module';
+import { ProductsModule } from '@app/products/products.module';
+import { SeedsModule } from '@app/seeds/seeds.module';
+import { UsersModule } from '@app/users/users.module';
+import Configuration from '@config/configuration';
+import { LoggerModule } from '@logger/logger.module';
+import { LoggerService } from '@logger/logger.service';
 import { Module } from '@nestjs/common';
-import { AppController } from 'src/app/app.controller';
-import { AppService } from 'src/app/app.service';
-import { ResponseModule } from 'src/response/response.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ResponseModule } from '@response/response.module';
 import { WinstonModule } from 'nest-winston';
-import { LoggerService } from 'src/logger/logger.service';
-import { LoggerModule } from 'src/logger/logger.module';
-import Configuration from 'src/config/configuration';
 
 @Module({
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
   imports: [
     ConfigModule.forRoot({
       load: [Configuration],
       ignoreEnvFile: true,
       isGlobal: true,
       cache: true,
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get('db.postgres.host'),
+        port: +configService.get<number>('db.postgres.port'),
+        username: configService.get('db.postgres.username'),
+        password: configService.get('db.postgres.password'),
+        database: configService.get('db.postgres.name'),
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        synchronize: true,
+      }),
+      inject: [ConfigService],
     }),
     WinstonModule.forRootAsync({
       inject: [LoggerService],
@@ -26,6 +45,12 @@ import Configuration from 'src/config/configuration';
     }),
     LoggerModule,
     ResponseModule,
+    ProductsModule,
+    SeedsModule,
+    AuthModule,
+    UsersModule,
+    OrdersModule,
+    CartsModule,
   ],
 })
 export class AppModule {}

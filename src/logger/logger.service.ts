@@ -6,8 +6,8 @@ import {
   LOGGER_MAX_FILES,
   LOGGER_MAX_SIZE,
   LOGGER_NAME,
-} from 'src/logger/logger.constant';
-import { ILoggerOptions } from 'src/logger/logger.interface';
+} from '@logger/logger.constant';
+import { ILoggerOptions } from '@logger/logger.interface';
 import { ConfigService } from '@nestjs/config';
 import * as moment from 'moment';
 

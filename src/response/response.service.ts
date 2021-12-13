@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { IErrors } from 'src/message/message.interface';
-import { IResponse, IResponsePaging } from 'src/response/response.interface';
+import { IErrors } from '@message/message.interface';
+import { IResponse, IResponsePaging } from '@response/response.interface';
 
 @Injectable()
 export class ResponseService {

@@ -10,10 +10,8 @@ import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 @Catch()
 export class ResponseFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost): void {
-    console.log('exception', exception);
     const ctx: HttpArgumentsHost = host.switchToHttp();
     const response: any = ctx.getResponse();
-    console.log('exception', exception);
 
     if (exception instanceof HttpException) {
       const status: number = exception.getStatus();
@@ -23,7 +21,7 @@ export class ResponseFilter implements ExceptionFilter {
       response.status(status).json({
         code: status,
         message: exceptionData.message,
-        errors: exceptionData.errors,
+        error: exceptionData.error,
       });
     } else {
       const status: number = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -31,7 +29,8 @@ export class ResponseFilter implements ExceptionFilter {
 
       response.status(status).json({
         code: status,
-        message: exception || message,
+        message: exception,
+        error: message,
       });
     }
   }

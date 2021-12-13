@@ -4,9 +4,9 @@ import {
   UseFilters,
   UseInterceptors,
 } from '@nestjs/common';
-import { ResponseFilter } from './response.filter';
-import { ResponseInterceptor } from './response.interceptor';
-import { ResponseService } from './response.service';
+import { ResponseFilter } from '@response/response.filter';
+import { ResponseInterceptor } from '@response/response.interceptor';
+import { ResponseService } from '@response/response.service';
 
 export function Response(): (
   target: Record<string, any>,

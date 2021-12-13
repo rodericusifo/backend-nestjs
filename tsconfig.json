@@ -10,6 +10,14 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
-    "incremental": true
+    "incremental": true,
+    "paths": {
+      "@app/*": ["src/app/*"],
+      "@config/*": ["src/config/*"],
+      "@logger/*": ["src/logger/*"],
+      "@message/*": ["src/message/*"],
+      "@response/*": ["src/response/*"],
+      "@shared/*": ["src/shared/*"]
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { IErrors } from 'src/message/message.interface';
+import { IErrors } from '@message/message.interface';
 
 export interface IResponse {
   readonly message: string;

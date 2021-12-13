@@ -1,21 +1,36 @@
-import { NestFactory } from '@nestjs/core';
-import { Logger } from '@nestjs/common';
-import { AppModule } from 'src/app/app.module';
+import { NestFactory, Reflector } from '@nestjs/core';
+import {
+  ClassSerializerInterceptor,
+  Logger,
+  ValidationPipe,
+} from '@nestjs/common';
+import { AppModule } from '@app/app.module';
 import { ConfigService } from '@nestjs/config';
-import { ResponseFilter } from './response/response.filter';
+import { ResponseFilter } from '@response/response.filter';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { RolesGuard } from '@shared/guard/roles.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: true,
     bodyParser: true,
   });
-  const responseFilter = app.get(ResponseFilter);
-  app.useGlobalFilters(responseFilter);
   const configService = app.get(ConfigService);
+  const appPrefix = configService.get('app.prefix');
   const logger = new Logger();
-
-  // Global Prefix
-  // app.setGlobalPrefix('/api');
+  const config = new DocumentBuilder()
+    .setTitle('E-Commerce App API Documentation')
+    .setDescription('This is an E-Commerce App API Documentation')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .addServer(appPrefix)
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  app.useGlobalFilters(new ResponseFilter());
+  app.setGlobalPrefix(appPrefix);
+  SwaggerModule.setup(`${appPrefix}/docs`, app, document);
 
   await app.listen(configService.get('http.port') || 3000, () => {
     logger.log(
