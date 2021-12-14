@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { IsDateString, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class FileDTO {
@@ -32,4 +33,12 @@ export class FileDTO {
   @IsOptional()
   @IsDateString()
   deletedAt?: Date;
+
+  validatePathFile(compare: string) {
+    if (!this.path.includes(compare)) {
+      throw new BadRequestException(
+        `File with ID: ${this.id} can't be downloaded via this route`,
+      );
+    }
+  }
 }

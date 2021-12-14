@@ -7,6 +7,7 @@ import { ReadAllOrderByAdminDTO } from '@app/orders/dto/read-all-order-by-admin.
 import { ReadAllOrderByCustomerDTO } from '@app/orders/dto/read-all-order-by-customer.dto';
 import { ReadOrderByAdminDTO } from '@app/orders/dto/read-order-by-admin.dto';
 import { ReadOrderByCustomerDTO } from '@app/orders/dto/read-order-by-customer.dto';
+import { SubmitOrderPaymentProofDTO } from '@app/orders/dto/submit-order-payment-proof.dto';
 import { SubmitOrderDTO } from '@app/orders/dto/submit-order.dto';
 import { OrdersRepository } from '@app/orders/repository/orders.repository';
 import { IOrdersService } from '@app/orders/service/interface/orders-service.interface';
@@ -18,7 +19,6 @@ import { OrderStatus } from '@shared/enum/order-status.enum';
 import { IQuery } from '@shared/interface/other/query.interface';
 import { IReadAllServiceMethodResponse } from '@shared/interface/other/service-method-response/read-all-service-method-response.interface';
 import { plainToClass } from 'class-transformer';
-import { SubmitOrderPaymentProofDTO } from '../dto/submit-order-payment-proof.dto';
 
 @Injectable()
 export class OrdersService implements IOrdersService {

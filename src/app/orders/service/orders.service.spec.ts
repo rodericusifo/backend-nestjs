@@ -58,6 +58,7 @@ describe('OrdersService', () => {
           provide: FilesService,
           useValue: {
             createFile: jest.fn(),
+            readFilePaymentProof: jest.fn(),
           } as IFilesService,
         },
         {

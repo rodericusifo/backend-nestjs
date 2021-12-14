@@ -1,5 +1,12 @@
 import { Role } from '@shared/enum/role.enum';
-import { IsEmail, IsEnum, IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import {
+  IsArray,
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 export class UserRequest {
   @IsNotEmpty()
@@ -15,6 +22,7 @@ export class UserRequest {
   readonly email: string;
 
   @IsNotEmpty()
+  @IsArray()
   @IsEnum(Role, { each: true })
   readonly roles: Role[];
 }

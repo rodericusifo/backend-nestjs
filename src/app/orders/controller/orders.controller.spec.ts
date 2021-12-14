@@ -63,6 +63,7 @@ describe('OrdersController', () => {
           provide: FilesService,
           useValue: {
             createFile: jest.fn(),
+            readFilePaymentProof: jest.fn(),
           } as IFilesService,
         },
         {
