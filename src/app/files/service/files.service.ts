@@ -1,12 +1,12 @@
 import { CreateFileDTO } from '@app/files/dto/create-file.dto';
 import { FileDTO } from '@app/files/dto/file.dto';
+import { ReadFilePaymentProofDTO } from '@app/files/dto/read-file-payment-proof.dto';
 import { FilesRepository } from '@app/files/repository/files.repository';
 import { IFilesService } from '@app/files/service/interface/files-service.interface';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from '@shared/enum/role.enum';
 import { plainToClass } from 'class-transformer';
-import { ReadFilePaymentProofDTO } from '../dto/read-file-payment-proof.dto';
 
 @Injectable()
 export class FilesService implements IFilesService {

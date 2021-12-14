@@ -6,7 +6,7 @@ app:
   env: "development"
   language: "en"
   debug: false
-  prefix: '/api/v1'
+  prefix: "/api/v1"
 
   logger:
     http: false
@@ -16,7 +16,7 @@ app:
     passwordSaltLength: 16
 
   auth:
-    jwtSecretKey: ""
+    jwtSecretKey: "G23gsMcIsj"
     jwtExpiration: "1h"
     basicClientId: ""
     basicClientSecret: ""
@@ -27,4 +27,8 @@ db:
     port: 5432
     username: ""
     password: ""
-    name: ""
+    name: "AIT_Test"
+
+db-seed:
+  products: 15
+  users: 1
