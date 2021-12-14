@@ -173,6 +173,7 @@ export class OrdersService implements IOrdersService {
     const foundOrderDTO = await this.ordersRepository.findOrderWithUserId(
       orderDTO,
     );
+    foundOrderDTO.checkStatusEqualWith(OrderStatus.Submitted);
     const savedPaymentProofDTO = await this.filesService.createFile({
       mimeType: payload.mimeType,
       originalName: payload.originalName,

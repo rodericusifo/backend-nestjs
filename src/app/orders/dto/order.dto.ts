@@ -1,4 +1,5 @@
 import { CartDTO } from '@app/carts/dto/cart.dto';
+import { BadGatewayException } from '@nestjs/common';
 import { OrderStatus } from '@shared/enum/order-status.enum';
 import {
   IsArray,
@@ -72,5 +73,13 @@ export class OrderDTO {
 
   setPaymentProofLink(link: string) {
     this.paymentProofLink = link;
+  }
+
+  checkStatusEqualWith(status: OrderStatus) {
+    if (this.status !== status) {
+      throw new BadGatewayException(
+        'You Need Submit This Order First before upload payment proof',
+      );
+    }
   }
 }

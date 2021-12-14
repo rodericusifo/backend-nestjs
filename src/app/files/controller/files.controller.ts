@@ -35,11 +35,11 @@ export class FilesController {
     });
     console.log(foundFileDTO);
     const file = createReadStream(join(process.cwd(), foundFileDTO.path));
-    console.log(file);
     res.set({
       'Content-Type': foundFileDTO.mimeType,
       'Content-Disposition': `attachment; filename="${foundFileDTO.originalName}"`,
     });
+    console.log(new StreamableFile(file));
     return new StreamableFile(file);
   }
 }
