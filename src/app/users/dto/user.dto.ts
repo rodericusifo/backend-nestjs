@@ -1,46 +1,15 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { Role } from '@shared/enum/role.enum';
 import * as bcrypt from 'bcrypt';
-import {
-  IsDateString,
-  IsEmail,
-  IsEnum,
-  IsOptional,
-  IsString,
-  IsUUID,
-} from 'class-validator';
 
 export class UserDTO {
-  @IsOptional()
-  @IsUUID()
   id?: string;
-
-  @IsOptional()
-  @IsString()
   name?: string;
-
-  @IsOptional()
-  @IsEmail()
   email?: string;
-
-  @IsOptional()
-  @IsString()
   password?: string;
-
-  @IsOptional()
-  @IsEnum(Role, { each: true })
   roles?: Role[];
-
-  @IsOptional()
-  @IsDateString()
   createdAt?: Date;
-
-  @IsOptional()
-  @IsDateString()
   updatedAt?: Date;
-
-  @IsOptional()
-  @IsDateString()
   deletedAt?: Date;
 
   setAsAdmin() {
