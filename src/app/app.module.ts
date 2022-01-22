@@ -6,12 +6,10 @@ import { ProductsModule } from '@app/products/products.module';
 import { SeedsModule } from '@app/seeds/seeds.module';
 import { UsersModule } from '@app/users/users.module';
 import Configuration from '@config/configuration';
-import { multerConfiguration } from '@config/multer.configuration';
 import { LoggerModule } from '@logger/logger.module';
 import { LoggerService } from '@logger/logger.service';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MulterModule } from '@nestjs/platform-express';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ResponseModule } from '@response/response.module';
 import { WinstonModule } from 'nest-winston';
@@ -54,5 +52,7 @@ import { WinstonModule } from 'nest-winston';
     CartsModule,
     FilesModule,
   ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

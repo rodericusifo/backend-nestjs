@@ -59,5 +59,5 @@ Good luck.
 ## More Explanation
 
 - Run: yarn seed:up
-- Documentation: {origin}/api/docs
+- Documentation: {origin}/api/v1/docs
 - Coverage: yarn test:cov
