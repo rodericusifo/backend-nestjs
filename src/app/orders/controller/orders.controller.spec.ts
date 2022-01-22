@@ -1,8 +1,4 @@
 import { CartDTO } from '@app/carts/dto/cart.dto';
-import { CartsService } from '@app/carts/service/carts.service';
-import { ICartsService } from '@app/carts/service/interface/carts-service.interface';
-import { FilesService } from '@app/files/service/files.service';
-import { IFilesService } from '@app/files/service/interface/files-service.interface';
 import { OrdersController } from '@app/orders/controller/orders.controller';
 import { AddProductCustomerOrderBodyRequest } from '@app/orders/controller/request/body/add-product-customer-order-body.request';
 import { CreateCustomerOrderBodyRequest } from '@app/orders/controller/request/body/create-customer-order-body.request';
@@ -14,13 +10,9 @@ import { SubmitOrderPaymentProofByCustomerParamRequest } from '@app/orders/contr
 import { ListOrderByAdminQueryRequest } from '@app/orders/controller/request/query/list-order-by-admin-query.request';
 import { ListOrderByCustomerQueryRequest } from '@app/orders/controller/request/query/list-order-by-customer-query.request';
 import { OrderDTO } from '@app/orders/dto/order.dto';
-import { OrdersRepository } from '@app/orders/repository/orders.repository';
 import { OrdersService } from '@app/orders/service/orders.service';
-import { IProductsService } from '@app/products/service/interface/products-service.interface';
-import { ProductsService } from '@app/products/service/products.service';
-import { ConfigModule } from '@nestjs/config';
+import { MockedOrdersService } from '@app/orders/__mocks__/service/mock-orders.service';
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { IResponse, IResponsePaging } from '@response/response.interface';
 import { ResponseModule } from '@response/response.module';
 import { ResponseService } from '@response/response.service';
@@ -33,49 +25,24 @@ import { randomUUID } from 'crypto';
 
 describe('OrdersController', () => {
   let ordersController: OrdersController;
-  let ordersService: OrdersService;
+  let ordersService: MockedOrdersService;
   let responseService: ResponseService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [ResponseModule, ConfigModule],
+      imports: [ResponseModule],
       controllers: [OrdersController],
       providers: [
-        OrdersService,
         {
-          provide: CartsService,
-          useValue: {
-            createCart: jest.fn(),
-            readAllCart: jest.fn(),
-          } as ICartsService,
-        },
-        {
-          provide: ProductsService,
-          useValue: {
-            createProduct: jest.fn(),
-            deleteAllProduct: jest.fn(),
-            readAllProduct: jest.fn(),
-            readProduct: jest.fn(),
-            updateProduct: jest.fn(),
-          } as IProductsService,
-        },
-        {
-          provide: FilesService,
-          useValue: {
-            createFile: jest.fn(),
-            readFilePaymentProof: jest.fn(),
-          } as IFilesService,
-        },
-        {
-          provide: getRepositoryToken(OrdersRepository),
-          useClass: OrdersRepository,
+          provide: OrdersService,
+          useClass: MockedOrdersService,
         },
       ],
     }).compile();
 
-    ordersController = module.get<OrdersController>(OrdersController);
-    ordersService = module.get<OrdersService>(OrdersService);
-    responseService = module.get<ResponseService>(ResponseService);
+    ordersController = module.get(OrdersController);
+    ordersService = module.get(OrdersService);
+    responseService = module.get(ResponseService);
   });
 
   it('should be defined', () => {

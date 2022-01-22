@@ -1,27 +1,25 @@
 import { ProductsController } from '@app/products/controller/products.controller';
 import { ListProductQueryRequest } from '@app/products/controller/request/query/list-product-query.request';
 import { ProductDTO } from '@app/products/dto/product.dto';
-import { ProductsRepository } from '@app/products/repository/products.repository';
 import { ProductsService } from '@app/products/service/products.service';
+import { MockedProductsService } from '@app/products/__mocks__/service/mock-products.service';
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { IResponsePaging } from '@response/response.interface';
 import { ResponseModule } from '@response/response.module';
 import { IReadAllServiceMethodResponse } from '@shared/interface/other/service-method-response/read-all-service-method-response.interface';
 
 describe('ProductsController', () => {
   let productsController: ProductsController;
-  let productsService: ProductsService;
+  let productsService: MockedProductsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [ResponseModule],
       controllers: [ProductsController],
       providers: [
-        ProductsService,
         {
-          provide: getRepositoryToken(ProductsRepository),
-          useClass: ProductsRepository,
+          provide: ProductsService,
+          useClass: MockedProductsService,
         },
       ],
     }).compile();

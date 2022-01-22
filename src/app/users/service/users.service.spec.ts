@@ -3,6 +3,7 @@ import { ReadUserForLoginDTO } from '@app/users/dto/read-user-for-login.dto';
 import { UserDTO } from '@app/users/dto/user.dto';
 import { UsersRepository } from '@app/users/repository/users.repository';
 import { UsersService } from '@app/users/service/users.service';
+import { MockedUsersRepository } from '@app/users/__mocks__/repository/mock-users.repository';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -11,7 +12,7 @@ import { plainToClass } from 'class-transformer';
 
 describe('UsersService', () => {
   let usersService: UsersService;
-  let usersRepository: UsersRepository;
+  let usersRepository: MockedUsersRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -20,15 +21,13 @@ describe('UsersService', () => {
         UsersService,
         {
           provide: getRepositoryToken(UsersRepository),
-          useClass: UsersRepository,
+          useClass: MockedUsersRepository,
         },
       ],
     }).compile();
 
-    usersService = module.get<UsersService>(UsersService);
-    usersRepository = module.get<UsersRepository>(
-      getRepositoryToken(UsersRepository),
-    );
+    usersService = module.get(UsersService);
+    usersRepository = module.get(getRepositoryToken(UsersRepository));
   });
 
   it('should be defined', () => {

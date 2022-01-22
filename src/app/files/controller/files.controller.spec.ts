@@ -1,29 +1,27 @@
 import { FilesController } from '@app/files/controller/files.controller';
-import { FilesRepository } from '@app/files/repository/files.repository';
 import { FilesService } from '@app/files/service/files.service';
+import { MockedFilesService } from '@app/files/__mocks__/service/mock-files.service';
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { ResponseModule } from '@response/response.module';
 
 describe('FilesController', () => {
   let filesController: FilesController;
-  let filesService: FilesService;
+  let filesService: MockedFilesService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [ResponseModule],
       controllers: [FilesController],
       providers: [
-        FilesService,
         {
-          provide: getRepositoryToken(FilesRepository),
-          useClass: FilesRepository,
+          provide: FilesService,
+          useClass: MockedFilesService,
         },
       ],
     }).compile();
 
-    filesController = module.get<FilesController>(FilesController);
-    filesService = module.get<FilesService>(FilesService);
+    filesController = module.get(FilesController);
+    filesService = module.get(FilesService);
   });
 
   it('should be defined', () => {

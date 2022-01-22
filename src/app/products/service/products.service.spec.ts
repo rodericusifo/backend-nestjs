@@ -5,6 +5,7 @@ import { ReadProductDTO } from '@app/products/dto/read-product.dto';
 import { UpdateProductDTO } from '@app/products/dto/update-product.dto';
 import { ProductsRepository } from '@app/products/repository/products.repository';
 import { ProductsService } from '@app/products/service/products.service';
+import { MockedProductsRepository } from '@app/products/__mocks__/repository/mock-products.repository';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { IReadAllServiceMethodResponse } from '@shared/interface/other/service-method-response/read-all-service-method-response.interface';
@@ -13,7 +14,7 @@ import { randomUUID } from 'crypto';
 
 describe('ProductsService', () => {
   let productsService: ProductsService;
-  let productsRepository: ProductsRepository;
+  let productsRepository: MockedProductsRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -21,15 +22,13 @@ describe('ProductsService', () => {
         ProductsService,
         {
           provide: getRepositoryToken(ProductsRepository),
-          useClass: ProductsRepository,
+          useClass: MockedProductsRepository,
         },
       ],
     }).compile();
 
-    productsService = module.get<ProductsService>(ProductsService);
-    productsRepository = module.get<ProductsRepository>(
-      getRepositoryToken(ProductsRepository),
-    );
+    productsService = module.get(ProductsService);
+    productsRepository = module.get(getRepositoryToken(ProductsRepository));
   });
 
   it('should be defined', () => {

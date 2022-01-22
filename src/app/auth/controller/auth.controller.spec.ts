@@ -2,9 +2,7 @@ import { AuthController } from '@app/auth/controller/auth.controller';
 import { LoginBodyRequest } from '@app/auth/controller/request/body/login-body.request';
 import { RegisterBodyRequest } from '@app/auth/controller/request/body/register-body.request';
 import { AuthService } from '@app/auth/service/auth.service';
-import { IUsersService } from '@app/users/service/interface/users-service.interface';
-import { UsersService } from '@app/users/service/users.service';
-import { JwtService } from '@nestjs/jwt';
+import { MockedAuthService } from '@app/auth/__mocks__/service/mock-auth.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { IResponse } from '@response/response.interface';
 import { ResponseModule } from '@response/response.module';
@@ -13,35 +11,23 @@ import { ResponseService } from '@response/response.service';
 describe('AuthController', () => {
   let authController: AuthController;
   let responseService: ResponseService;
-  let authService: AuthService;
+  let authService: MockedAuthService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [ResponseModule],
       controllers: [AuthController],
       providers: [
-        AuthService,
         {
-          provide: UsersService,
-          useValue: {
-            createUserAsAdmin: jest.fn(),
-            createUserAsCustomer: jest.fn(),
-            deleteAllAdminUser: jest.fn(),
-            readUserForLogin: jest.fn(),
-          } as IUsersService,
-        },
-        {
-          provide: JwtService,
-          useValue: {
-            sign: jest.fn(),
-          },
+          provide: AuthService,
+          useClass: MockedAuthService,
         },
       ],
     }).compile();
 
-    authController = module.get<AuthController>(AuthController);
-    responseService = module.get<ResponseService>(ResponseService);
-    authService = module.get<AuthService>(AuthService);
+    authController = module.get(AuthController);
+    responseService = module.get(ResponseService);
+    authService = module.get(AuthService);
   });
 
   it('should be defined', () => {

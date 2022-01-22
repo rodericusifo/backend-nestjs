@@ -3,9 +3,10 @@ import { CreateCartDTO } from '@app/carts/dto/create-cart.dto';
 import { ReadAllCartDTO } from '@app/carts/dto/read-all-cart.dto';
 import { CartsRepository } from '@app/carts/repository/carts.repository';
 import { CartsService } from '@app/carts/service/carts.service';
+import { MockedCartsRepository } from '@app/carts/__mocks__/repository/mock-carts.repository';
 import { ProductDTO } from '@app/products/dto/product.dto';
-import { IProductsService } from '@app/products/service/interface/products-service.interface';
 import { ProductsService } from '@app/products/service/products.service';
+import { MockedProductsService } from '@app/products/__mocks__/service/mock-products.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
@@ -13,8 +14,8 @@ import { randomUUID } from 'crypto';
 
 describe('CartsService', () => {
   let cartsService: CartsService;
-  let cartsRepository: CartsRepository;
-  let productsService: ProductsService;
+  let cartsRepository: MockedCartsRepository;
+  let productsService: MockedProductsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -23,24 +24,18 @@ describe('CartsService', () => {
         CartsService,
         {
           provide: ProductsService,
-          useValue: {
-            createProduct: jest.fn(),
-            deleteAllProduct: jest.fn(),
-            readAllProduct: jest.fn(),
-            readProduct: jest.fn(),
-            updateProduct: jest.fn(),
-          } as IProductsService,
+          useClass: MockedProductsService,
         },
         {
           provide: getRepositoryToken(CartsRepository),
-          useClass: CartsRepository,
+          useClass: MockedCartsRepository,
         },
       ],
     }).compile();
 
-    cartsService = module.get<CartsService>(CartsService);
-    cartsRepository = module.get<CartsRepository>(CartsRepository);
-    productsService = module.get<ProductsService>(ProductsService);
+    cartsService = module.get(CartsService);
+    cartsRepository = module.get(getRepositoryToken(CartsRepository));
+    productsService = module.get(ProductsService);
   });
 
   it('should be defined', () => {

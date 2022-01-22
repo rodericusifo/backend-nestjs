@@ -2,18 +2,19 @@ import { LoginAuthDTO } from '@app/auth/dto/login-auth.dto';
 import { RegisterAuthDTO } from '@app/auth/dto/register-auth.dto';
 import { AuthService } from '@app/auth/service/auth.service';
 import { UserDTO } from '@app/users/dto/user.dto';
-import { IUsersService } from '@app/users/service/interface/users-service.interface';
 import { UsersService } from '@app/users/service/users.service';
+import { MockedUsersService } from '@app/users/__mocks__/service/mock-users.service';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ILoginAuthServiceMethodResponse } from '@shared/interface/other/service-method-response/login-auth-service-method-response.interface';
+import { MockedJwtService } from '@shared/__mocks__/service/mock-jwt.service';
 import { plainToClass } from 'class-transformer';
 import { randomUUID } from 'crypto';
 
 describe('AuthService', () => {
   let authService: AuthService;
-  let usersService: UsersService;
-  let jwtService: JwtService;
+  let usersService: MockedUsersService;
+  let jwtService: MockedJwtService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -21,25 +22,18 @@ describe('AuthService', () => {
         AuthService,
         {
           provide: UsersService,
-          useValue: {
-            createUserAsAdmin: jest.fn(),
-            createUserAsCustomer: jest.fn(),
-            deleteAllAdminUser: jest.fn(),
-            readUserForLogin: jest.fn(),
-          } as IUsersService,
+          useClass: MockedUsersService,
         },
         {
           provide: JwtService,
-          useValue: {
-            sign: jest.fn(),
-          },
+          useClass: MockedJwtService,
         },
       ],
     }).compile();
 
-    authService = module.get<AuthService>(AuthService);
-    usersService = module.get<UsersService>(UsersService);
-    jwtService = module.get<JwtService>(JwtService);
+    authService = module.get(AuthService);
+    usersService = module.get(UsersService);
+    jwtService = module.get(JwtService);
   });
 
   it('should be defined', () => {

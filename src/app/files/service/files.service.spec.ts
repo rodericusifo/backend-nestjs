@@ -3,6 +3,7 @@ import { FileDTO } from '@app/files/dto/file.dto';
 import { ReadFilePaymentProofDTO } from '@app/files/dto/read-file-payment-proof.dto';
 import { FilesRepository } from '@app/files/repository/files.repository';
 import { FilesService } from '@app/files/service/files.service';
+import { MockedFilesRepository } from '@app/files/__mocks__/repository/mock-files.repository';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Role } from '@shared/enum/role.enum';
@@ -11,7 +12,7 @@ import { randomUUID } from 'crypto';
 
 describe('FilesService', () => {
   let filesService: FilesService;
-  let filesRepository: FilesRepository;
+  let filesRepository: MockedFilesRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -19,15 +20,13 @@ describe('FilesService', () => {
         FilesService,
         {
           provide: getRepositoryToken(FilesRepository),
-          useClass: FilesRepository,
+          useClass: MockedFilesRepository,
         },
       ],
     }).compile();
 
-    filesService = module.get<FilesService>(FilesService);
-    filesRepository = module.get<FilesRepository>(
-      getRepositoryToken(FilesRepository),
-    );
+    filesService = module.get(FilesService);
+    filesRepository = module.get(getRepositoryToken(FilesRepository));
   });
 
   it('should be defined', () => {

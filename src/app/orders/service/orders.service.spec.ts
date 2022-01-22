@@ -1,9 +1,9 @@
 import { CartDTO } from '@app/carts/dto/cart.dto';
 import { CartsService } from '@app/carts/service/carts.service';
-import { ICartsService } from '@app/carts/service/interface/carts-service.interface';
+import { MockedCartsService } from '@app/carts/__mocks__/service/mock-carts.service';
 import { FileDTO } from '@app/files/dto/file.dto';
 import { FilesService } from '@app/files/service/files.service';
-import { IFilesService } from '@app/files/service/interface/files-service.interface';
+import { MockedFilesService } from '@app/files/__mocks__/service/mock-files.service';
 import { AddProductToOrderDTO } from '@app/orders/dto/add-product-to-order.dto';
 import { CreateOrderDTO } from '@app/orders/dto/create-order.dto';
 import { OrderDTO } from '@app/orders/dto/order.dto';
@@ -15,8 +15,9 @@ import { SubmitOrderPaymentProofDTO } from '@app/orders/dto/submit-order-payment
 import { SubmitOrderDTO } from '@app/orders/dto/submit-order.dto';
 import { OrdersRepository } from '@app/orders/repository/orders.repository';
 import { OrdersService } from '@app/orders/service/orders.service';
-import { IProductsService } from '@app/products/service/interface/products-service.interface';
+import { MockedOrdersRepository } from '@app/orders/__mocks__/repository/mock-orders.repository';
 import { ProductsService } from '@app/products/service/products.service';
+import { MockedProductsService } from '@app/products/__mocks__/service/mock-products.service';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -27,10 +28,10 @@ import { randomUUID } from 'crypto';
 
 describe('OrdersService', () => {
   let ordersService: OrdersService;
-  let ordersRepository: OrdersRepository;
-  let cartsService: CartsService;
-  let productsService: ProductsService;
-  let filesService: FilesService;
+  let ordersRepository: MockedOrdersRepository;
+  let cartsService: MockedCartsService;
+  let productsService: MockedProductsService;
+  let filesService: MockedFilesService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -39,42 +40,28 @@ describe('OrdersService', () => {
         OrdersService,
         {
           provide: CartsService,
-          useValue: {
-            createCart: jest.fn(),
-            readAllCart: jest.fn(),
-          } as ICartsService,
+          useClass: MockedCartsService,
         },
         {
           provide: ProductsService,
-          useValue: {
-            createProduct: jest.fn(),
-            deleteAllProduct: jest.fn(),
-            readAllProduct: jest.fn(),
-            readProduct: jest.fn(),
-            updateProduct: jest.fn(),
-          } as IProductsService,
+          useClass: MockedProductsService,
         },
         {
           provide: FilesService,
-          useValue: {
-            createFile: jest.fn(),
-            readFilePaymentProof: jest.fn(),
-          } as IFilesService,
+          useClass: MockedFilesService,
         },
         {
           provide: getRepositoryToken(OrdersRepository),
-          useClass: OrdersRepository,
+          useClass: MockedOrdersRepository,
         },
       ],
     }).compile();
 
-    ordersService = module.get<OrdersService>(OrdersService);
-    ordersRepository = module.get<OrdersRepository>(
-      getRepositoryToken(OrdersRepository),
-    );
-    cartsService = module.get<CartsService>(CartsService);
-    productsService = module.get<ProductsService>(ProductsService);
-    filesService = module.get<FilesService>(FilesService);
+    ordersService = module.get(OrdersService);
+    ordersRepository = module.get(getRepositoryToken(OrdersRepository));
+    cartsService = module.get(CartsService);
+    productsService = module.get(ProductsService);
+    filesService = module.get(FilesService);
   });
 
   it('should be defined', () => {
