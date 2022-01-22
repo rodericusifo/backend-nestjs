@@ -1,7 +1,7 @@
 import { FileDTO } from '@app/files/dto/file.dto';
 
 export interface IFilesRepository {
-  saveFile(fileDTO: Partial<FileDTO>): Promise<FileDTO>;
-  findFile(fileDTO: Partial<FileDTO>): Promise<FileDTO>;
-  findFileWithUserId(fileDTO: Partial<FileDTO>): Promise<FileDTO>;
+  saveFile(fileDTO: FileDTO): Promise<FileDTO>;
+  findFile(fileDTO: FileDTO): Promise<FileDTO>;
+  findFileWithUserId(fileDTO: FileDTO): Promise<FileDTO>;
 }
