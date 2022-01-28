@@ -1,7 +1,7 @@
 import {
-  ExceptionFilter,
-  Catch,
   ArgumentsHost,
+  Catch,
+  ExceptionFilter,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
@@ -18,6 +18,9 @@ export class ResponseFilter implements ExceptionFilter {
       const exceptionHttp: Record<string, any> = exception;
       const exceptionData: Record<string, any> = exceptionHttp.response;
 
+      // Put The Logger in This Part
+      console.log(exception);
+
       response.status(status).json({
         code: status,
         message: exceptionData.message,
@@ -25,12 +28,16 @@ export class ResponseFilter implements ExceptionFilter {
       });
     } else {
       const status: number = HttpStatus.INTERNAL_SERVER_ERROR;
-      const message = 'internal server error';
+      const message = 'Sorry, There is a trouble in our server';
+      const error = 'Internal Server Error';
+
+      // Put The Logger in This Part
+      console.log(exception);
 
       response.status(status).json({
         code: status,
-        message: exception,
-        error: message,
+        message: message,
+        error: error,
       });
     }
   }

@@ -21,6 +21,9 @@ export class UserDTO {
   }
 
   async encryptPassword(passwordSaltLength: number) {
+    if (!this.password) {
+      throw new UnauthorizedException(`Password needed for encryption process`);
+    }
     this.password = await bcrypt.hash(this.password, passwordSaltLength);
   }
 

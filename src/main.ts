@@ -16,7 +16,7 @@ async function bootstrap() {
   });
   const configService = app.get(ConfigService);
   const appPrefix = configService.get('app.prefix');
-  const logger = new Logger();
+  const logger = new Logger('Main');
   const config = new DocumentBuilder()
     .setTitle('E-Commerce App API Documentation')
     .setDescription('This is an E-Commerce App API Documentation')
