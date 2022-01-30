@@ -1,4 +1,4 @@
-import { UsersSeedBuilder } from '@app/seeds/users-seed/builder/users-seed.builder';
+import { UsersSeedBuilder } from '@app/seeds/users-seed/builders/users-seed.builder';
 import { UsersService } from '@app/users/services/users.service';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';

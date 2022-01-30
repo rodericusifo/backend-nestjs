@@ -1,5 +1,5 @@
 import { ProductsService } from '@app/products/services/products.service';
-import { ProductsSeedBuilder } from '@app/seeds/products-seed/builder/products-seed.builder';
+import { ProductsSeedBuilder } from '@app/seeds/products-seed/builders/products-seed.builder';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ISeedService } from '@shared/interfaces/service/seed-service.interface';
