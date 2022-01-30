@@ -9,6 +9,7 @@ import { SubmitOrderPaymentProofByCustomerParamRequest } from '@app/orders/contr
 import { ListOrderByAdminQueryRequest } from '@app/orders/controller/request/query/list-order-by-admin-query.request';
 import { ListOrderByCustomerQueryRequest } from '@app/orders/controller/request/query/list-order-by-customer-query.request';
 import { OrdersService } from '@app/orders/service/orders.service';
+import { MulterConfiguration } from '@config/multer.configuration';
 import {
   Body,
   Controller,
@@ -118,7 +119,9 @@ export class OrdersController {
 
   @ResponseStatusCode()
   @Auth(Role.Customer)
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileInterceptor('file', MulterConfiguration.uploadPaymentProofConfig()),
+  )
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     type: SubmitOrderPaymentProofByCustomerFileRequest,
