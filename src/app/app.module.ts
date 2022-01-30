@@ -12,6 +12,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ResponseModule } from '@response/response.module';
+import { StrategyModule } from '@shared/module/strategy.module';
 import { WinstonModule } from 'nest-winston';
 
 @Module({
@@ -42,6 +43,7 @@ import { WinstonModule } from 'nest-winston';
       useFactory: (loggerFileService: LoggerService) =>
         loggerFileService.createLogger(),
     }),
+    StrategyModule,
     LoggerModule,
     ResponseModule,
     ProductsModule,

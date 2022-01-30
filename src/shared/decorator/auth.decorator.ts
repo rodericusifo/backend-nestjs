@@ -1,4 +1,4 @@
-import { JwtAuthGuard } from '@app/auth/guard/jwt-auth.guard';
+import { JwtAuthGuard } from '@shared/guard/jwt-auth.guard';
 import { applyDecorators, SetMetadata, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Role } from '@shared/enum/role.enum';
