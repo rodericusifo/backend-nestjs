@@ -7,6 +7,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { IResponse } from '@response/response.interface';
 import { ResponseModule } from '@response/response.module';
 import { ResponseService } from '@response/response.service';
+import { WinstonModule } from 'nest-winston';
 
 describe('AuthController', () => {
   let authController: AuthController;
@@ -15,7 +16,7 @@ describe('AuthController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [ResponseModule],
+      imports: [ResponseModule, WinstonModule.forRoot({})],
       controllers: [AuthController],
       providers: [
         {

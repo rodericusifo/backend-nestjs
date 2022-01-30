@@ -39,8 +39,8 @@ import { WinstonModule } from 'nest-winston';
     WinstonModule.forRootAsync({
       inject: [LoggerService],
       imports: [LoggerModule],
-      useFactory: (loggerService: LoggerService) =>
-        loggerService.createLogger(),
+      useFactory: (loggerFileService: LoggerService) =>
+        loggerFileService.createLogger(),
     }),
     LoggerModule,
     ResponseModule,

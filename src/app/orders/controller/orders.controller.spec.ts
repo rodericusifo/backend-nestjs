@@ -22,6 +22,7 @@ import { IReadAllServiceMethodResponse } from '@shared/interface/other/service-m
 import { UserRequest } from '@shared/request/user/user.request';
 import { plainToClass } from 'class-transformer';
 import { randomUUID } from 'crypto';
+import { WinstonModule } from 'nest-winston';
 
 describe('OrdersController', () => {
   let ordersController: OrdersController;
@@ -30,7 +31,7 @@ describe('OrdersController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [ResponseModule],
+      imports: [ResponseModule, WinstonModule.forRoot({})],
       controllers: [OrdersController],
       providers: [
         {

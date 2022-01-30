@@ -1,6 +1,3 @@
-import { Injectable } from '@nestjs/common';
-import * as DailyRotateFile from 'winston-daily-rotate-file';
-import * as winston from 'winston';
 import {
   LOGGER_ENV,
   LOGGER_MAX_FILES,
@@ -8,8 +5,11 @@ import {
   LOGGER_NAME,
 } from '@logger/logger.constant';
 import { ILoggerOptions } from '@logger/logger.interface';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as moment from 'moment';
+import * as winston from 'winston';
+import * as DailyRotateFile from 'winston-daily-rotate-file';
 
 @Injectable()
 export class LoggerService {
@@ -48,7 +48,7 @@ export class LoggerService {
 
     transports.push(
       new winston.transports.Console({
-        silent: !loggerEnv || false,
+        silent: true,
       }),
     );
     return {

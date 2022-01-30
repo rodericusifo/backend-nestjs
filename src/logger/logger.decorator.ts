@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 
-export function Logger(): (
+export function WinstonLogger(): (
   target: Record<string, any>,
   key: string | symbol,
   index?: number,

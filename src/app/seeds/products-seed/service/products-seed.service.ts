@@ -16,7 +16,7 @@ export class ProductsSeedService implements ISeedService {
     command: 'seed:up:products',
     describe: 'seeding products',
   })
-  async Up() {
+  async up() {
     ProductsSeedBuilder.build(
       +this.configService.get<number>('db-seed.products'),
     ).forEach(async (productsSeedData) => {

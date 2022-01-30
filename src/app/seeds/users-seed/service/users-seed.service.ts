@@ -16,7 +16,7 @@ export class UsersSeedService implements ISeedService {
     command: 'seed:up:users',
     describe: 'seeding users',
   })
-  async Up() {
+  async up() {
     UsersSeedBuilder.build(
       +this.configService.get<number>('db-seed.users'),
     ).forEach(async (usersSeedData) => {

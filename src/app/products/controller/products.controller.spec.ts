@@ -7,6 +7,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { IResponsePaging } from '@response/response.interface';
 import { ResponseModule } from '@response/response.module';
 import { IReadAllServiceMethodResponse } from '@shared/interface/other/service-method-response/read-all-service-method-response.interface';
+import { WinstonModule } from 'nest-winston';
 
 describe('ProductsController', () => {
   let productsController: ProductsController;
@@ -14,7 +15,7 @@ describe('ProductsController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [ResponseModule],
+      imports: [ResponseModule, WinstonModule.forRoot({})],
       controllers: [ProductsController],
       providers: [
         {
