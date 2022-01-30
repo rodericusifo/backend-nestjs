@@ -2,7 +2,7 @@
 import { CreateFileDTO } from '@app/files/dto/create-file.dto';
 import { FileDTO } from '@app/files/dto/file.dto';
 import { ReadFilePaymentProofDTO } from '@app/files/dto/read-file-payment-proof.dto';
-import { IFilesService } from '@app/files/service/interface/files-service.interface';
+import { IFilesService } from '@app/files/services/interfaces/files-service.interface';
 
 export class MockedFilesService implements IFilesService {
   createFile(_payload: CreateFileDTO): Promise<FileDTO> {

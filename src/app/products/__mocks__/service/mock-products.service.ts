@@ -4,8 +4,8 @@ import { ProductDTO } from '@app/products/dto/product.dto';
 import { ReadAllProductDTO } from '@app/products/dto/read-all-product.dto';
 import { ReadProductDTO } from '@app/products/dto/read-product.dto';
 import { UpdateProductDTO } from '@app/products/dto/update-product.dto';
-import { IProductsService } from '@app/products/service/interface/products-service.interface';
-import { IReadAllServiceMethodResponse } from '@shared/interface/other/service-method-response/read-all-service-method-response.interface';
+import { IProductsService } from '@app/products/services/interfaces/products-service.interface';
+import { IReadAllServiceMethodResponse } from '@shared/interfaces/other/service-method-response/read-all-service-method-response.interface';
 
 export class MockedProductsService implements IProductsService {
   createProduct(_payload: CreateProductDTO) {

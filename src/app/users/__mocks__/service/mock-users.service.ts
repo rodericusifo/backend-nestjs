@@ -2,7 +2,7 @@
 import { CreateUserDTO } from '@app/users/dto/create-user.dto';
 import { ReadUserForLoginDTO } from '@app/users/dto/read-user-for-login.dto';
 import { UserDTO } from '@app/users/dto/user.dto';
-import { IUsersService } from '@app/users/service/interface/users-service.interface';
+import { IUsersService } from '@app/users/services/interfaces/users-service.interface';
 
 export class MockedUsersService implements IUsersService {
   createUserAsAdmin(_payload: CreateUserDTO) {

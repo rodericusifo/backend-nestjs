@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ProductDTO } from '@app/products/dto/product.dto';
-import { IProductsRepository } from '@app/products/repository/interface/products-repository.interface';
-import { IQuery } from '@shared/interface/other/query.interface';
+import { IProductsRepository } from '@app/products/database/repositories/interfaces/products-repository.interface';
+import { IQuery } from '@shared/interfaces/other/query.interface';
 
 export class MockedProductsRepository implements IProductsRepository {
   saveProduct(_productDTO: ProductDTO) {

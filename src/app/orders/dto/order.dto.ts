@@ -1,6 +1,6 @@
 import { CartDTO } from '@app/carts/dto/cart.dto';
 import { BadGatewayException } from '@nestjs/common';
-import { OrderStatus } from '@shared/enum/order-status.enum';
+import { OrderStatus } from '@shared/enums/order-status.enum';
 
 export class OrderDTO {
   id?: string;

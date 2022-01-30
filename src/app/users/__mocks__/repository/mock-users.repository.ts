@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { UserDTO } from '@app/users/dto/user.dto';
-import { IUsersRepository } from '@app/users/repository/interface/users-repository.interface';
+import { IUsersRepository } from '@app/users/database/repositories/interfaces/users-repository.interface';
 
 export class MockedUsersRepository implements IUsersRepository {
   saveUser(_userDTO: UserDTO) {

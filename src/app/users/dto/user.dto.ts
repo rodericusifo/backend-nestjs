@@ -1,5 +1,5 @@
 import { UnauthorizedException } from '@nestjs/common';
-import { Role } from '@shared/enum/role.enum';
+import { Role } from '@shared/enums/role.enum';
 import * as bcrypt from 'bcrypt';
 
 export class UserDTO {

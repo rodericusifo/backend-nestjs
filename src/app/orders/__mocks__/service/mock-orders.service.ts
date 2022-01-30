@@ -9,8 +9,8 @@ import { ReadOrderByAdminDTO } from '@app/orders/dto/read-order-by-admin.dto';
 import { ReadOrderByCustomerDTO } from '@app/orders/dto/read-order-by-customer.dto';
 import { SubmitOrderPaymentProofDTO } from '@app/orders/dto/submit-order-payment-proof.dto';
 import { SubmitOrderDTO } from '@app/orders/dto/submit-order.dto';
-import { IOrdersService } from '@app/orders/service/interface/orders-service.interface';
-import { IReadAllServiceMethodResponse } from '@shared/interface/other/service-method-response/read-all-service-method-response.interface';
+import { IOrdersService } from '@app/orders/services/interfaces/orders-service.interface';
+import { IReadAllServiceMethodResponse } from '@shared/interfaces/other/service-method-response/read-all-service-method-response.interface';
 
 export class MockedOrdersService implements IOrdersService {
   createOrder(_payload: CreateOrderDTO) {

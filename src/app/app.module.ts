@@ -12,7 +12,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ResponseModule } from '@response/response.module';
-import { StrategyModule } from '@shared/module/strategy.module';
+import { StrategyModule } from '@shared/modules/strategy.module';
 import { WinstonModule } from 'nest-winston';
 
 @Module({

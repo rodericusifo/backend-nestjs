@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { FileDTO } from '@app/files/dto/file.dto';
-import { IFilesRepository } from '@app/files/repository/interface/files-repository';
+import { IFilesRepository } from '@app/files/database/repositories/interfaces/files-repository';
 
 export class MockedFilesRepository implements IFilesRepository {
   saveFile(_fileDTO: FileDTO): Promise<FileDTO> {

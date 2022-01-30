@@ -1,5 +1,5 @@
-import { UsersRepository } from '@app/users/repository/users.repository';
-import { UsersService } from '@app/users/service/users.service';
+import { UsersRepository } from '@app/users/database/repositories/users.repository';
+import { UsersService } from '@app/users/services/users.service';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

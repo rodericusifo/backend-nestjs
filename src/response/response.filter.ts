@@ -8,7 +8,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
-import { HTTPHelper } from '@shared/helper/http.helper';
+import { HTTPHelper } from '@shared/helpers/http.helper';
 
 @Catch()
 export class ResponseFilter implements ExceptionFilter {

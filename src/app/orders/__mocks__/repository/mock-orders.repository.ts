@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { OrderDTO } from '@app/orders/dto/order.dto';
-import { IOrdersRepository } from '@app/orders/repository/interface/orders-repository.interface';
-import { IQuery } from '@shared/interface/other/query.interface';
+import { IOrdersRepository } from '@app/orders/database/repositories/interfaces/orders-repository.interface';
+import { IQuery } from '@shared/interfaces/other/query.interface';
 
 export class MockedOrdersRepository implements IOrdersRepository {
   saveOrder(_orderDTO: OrderDTO) {
