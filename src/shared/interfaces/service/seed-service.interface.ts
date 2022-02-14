@@ -1,4 +1,3 @@
 export interface ISeedService {
-  up();
-  drop();
+  seed();
 }

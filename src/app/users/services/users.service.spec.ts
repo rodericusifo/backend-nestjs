@@ -1,14 +1,14 @@
+import { UsersRepository } from '@app/users/database/repositories/users.repository';
 import { CreateUserDTO } from '@app/users/dto/create-user.dto';
 import { ReadUserForLoginDTO } from '@app/users/dto/read-user-for-login.dto';
 import { UserDTO } from '@app/users/dto/user.dto';
-import { UsersRepository } from '@app/users/database/repositories/users.repository';
 import { UsersService } from '@app/users/services/users.service';
 import { MockedUsersRepository } from '@app/users/__mocks__/repository/mock-users.repository';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 
 describe('UsersService', () => {
   let usersService: UsersService;
@@ -144,7 +144,7 @@ describe('UsersService', () => {
         password: '12345',
       };
       const encryptedPassword = await bcrypt.hash(argument.password, 16);
-      const expectedResult: UserDTO = plainToClass(UserDTO, {
+      const expectedResult: UserDTO = plainToInstance(UserDTO, {
         id: '1112222',
         name: 'Rodericus Ifo',
         email: 'rodericus123@gmail.com',
@@ -156,7 +156,7 @@ describe('UsersService', () => {
       const expectedError = undefined;
       jest.spyOn(usersRepository, 'findUserWithEmail').mockImplementation(() =>
         Promise.resolve(
-          plainToClass(UserDTO, {
+          plainToInstance(UserDTO, {
             id: '1112222',
             name: 'Rodericus Ifo',
             email: 'rodericus123@gmail.com',
@@ -192,35 +192,6 @@ describe('UsersService', () => {
         .mockImplementation(() => Promise.resolve(true));
       try {
         const data = await usersService.readUserForLogin(argument);
-        expect(data).toEqual(expectedResult);
-      } catch (error) {
-        expect(error).toEqual(expectedError);
-      }
-    });
-  });
-
-  describe('deleteAllUser()', () => {
-    it('should successfully clear all user', async () => {
-      const expectedResult = undefined;
-      const expectedError = undefined;
-      jest
-        .spyOn(usersRepository, 'removeAllAdminUser')
-        .mockImplementation(() => Promise.resolve(null));
-      try {
-        const data = await usersService.deleteAllAdminUser();
-        expect(data).toEqual(expectedResult);
-      } catch (error) {
-        expect(error).toEqual(expectedError);
-      }
-    });
-    it('should failed clear all user', async () => {
-      const expectedResult = undefined;
-      const expectedError = 'Failed Clear All User';
-      jest
-        .spyOn(usersRepository, 'removeAllAdminUser')
-        .mockImplementation(() => Promise.reject('Failed Clear All User'));
-      try {
-        const data = await usersService.deleteAllAdminUser();
         expect(data).toEqual(expectedResult);
       } catch (error) {
         expect(error).toEqual(expectedError);

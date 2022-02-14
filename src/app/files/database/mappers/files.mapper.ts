@@ -1,13 +1,13 @@
-import { FileDTO } from '@app/files/dto/file.dto';
 import { File } from '@app/files/database/entities/file.entity';
-import { plainToClass } from 'class-transformer';
+import { FileDTO } from '@app/files/dto/file.dto';
+import { plainToInstance } from 'class-transformer';
 
 export class FilesMapper {
   static DTOToEntity(fileDTO: Partial<FileDTO>): File {
-    return plainToClass(File, fileDTO);
+    return plainToInstance(File, fileDTO);
   }
 
   static EntityToDTO(file: Partial<File>): FileDTO {
-    return plainToClass(FileDTO, file);
+    return plainToInstance(FileDTO, file);
   }
 }

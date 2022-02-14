@@ -1,12 +1,12 @@
+import { UsersRepository } from '@app/users/database/repositories/users.repository';
 import { CreateUserDTO } from '@app/users/dto/create-user.dto';
 import { ReadUserForLoginDTO } from '@app/users/dto/read-user-for-login.dto';
 import { UserDTO } from '@app/users/dto/user.dto';
-import { UsersRepository } from '@app/users/database/repositories/users.repository';
 import { IUsersService } from '@app/users/services/interfaces/users-service.interface';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class UsersService implements IUsersService {
@@ -16,7 +16,7 @@ export class UsersService implements IUsersService {
     private readonly configService: ConfigService,
   ) {}
   async createUserAsAdmin(payload: CreateUserDTO) {
-    const userDTO = plainToClass(UserDTO, payload);
+    const userDTO = plainToInstance(UserDTO, payload);
     userDTO.setAsAdmin();
     await userDTO.encryptPassword(
       +this.configService.get<number>('app.hash.passwordSaltLength'),
@@ -25,7 +25,7 @@ export class UsersService implements IUsersService {
   }
 
   async createUserAsCustomer(payload: CreateUserDTO) {
-    const userDTO = plainToClass(UserDTO, payload);
+    const userDTO = plainToInstance(UserDTO, payload);
     userDTO.setAsCustomer();
     await userDTO.encryptPassword(
       +this.configService.get<number>('app.hash.passwordSaltLength'),
@@ -34,13 +34,9 @@ export class UsersService implements IUsersService {
   }
 
   async readUserForLogin(payload: ReadUserForLoginDTO): Promise<UserDTO> {
-    const userDTO = plainToClass(UserDTO, payload);
+    const userDTO = plainToInstance(UserDTO, payload);
     const foundUserDTO = await this.usersRepository.findUserWithEmail(userDTO);
     await foundUserDTO.decryptPasswordAndValidate(userDTO.password);
     return foundUserDTO;
-  }
-
-  async deleteAllAdminUser() {
-    await this.usersRepository.removeAllAdminUser();
   }
 }

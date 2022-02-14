@@ -14,9 +14,6 @@ export class MockedProductsService implements IProductsService {
   updateProduct(_payload: UpdateProductDTO) {
     throw new Error('Method not implemented.');
   }
-  deleteAllProduct() {
-    throw new Error('Method not implemented.');
-  }
   readAllProduct(
     _payload: ReadAllProductDTO,
   ): Promise<IReadAllServiceMethodResponse<ProductDTO[]>> {

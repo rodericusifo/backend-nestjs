@@ -20,7 +20,7 @@ import { Role } from '@shared/enums/role.enum';
 import { IHeaders } from '@shared/interfaces/other/headers.interface';
 import { IReadAllServiceMethodResponse } from '@shared/interfaces/other/service-method-response/read-all-service-method-response.interface';
 import { UserRequest } from '@shared/request/user/user.request';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { randomUUID } from 'crypto';
 import { WinstonModule } from 'nest-winston';
 
@@ -191,11 +191,11 @@ describe('OrdersController', () => {
       };
       const expectedResult: IResponse = {
         message: 'Order Found',
-        data: plainToClass(OrderDTO, {
+        data: plainToInstance(OrderDTO, {
           id: paramArgument.id,
           title: 'Order 1',
           carts: [
-            plainToClass(CartDTO, {
+            plainToInstance(CartDTO, {
               id: '12345',
               quantity: 2,
             } as Partial<CartDTO>),
@@ -205,11 +205,11 @@ describe('OrdersController', () => {
       const expectedError = undefined;
       jest.spyOn(ordersService, 'readOrderByAdmin').mockImplementation(() =>
         Promise.resolve(
-          plainToClass(OrderDTO, {
+          plainToInstance(OrderDTO, {
             id: paramArgument.id,
             title: 'Order 1',
             carts: [
-              plainToClass(CartDTO, {
+              plainToInstance(CartDTO, {
                 id: '12345',
                 quantity: 2,
               } as Partial<CartDTO>),
@@ -257,12 +257,12 @@ describe('OrdersController', () => {
       };
       const expectedResult: IResponse = {
         message: 'Order Found',
-        data: plainToClass(OrderDTO, {
+        data: plainToInstance(OrderDTO, {
           id: paramArgument.id,
           title: 'Order 1',
           userId: userArgument.id,
           carts: [
-            plainToClass(CartDTO, {
+            plainToInstance(CartDTO, {
               id: '12345',
               quantity: 2,
             } as Partial<CartDTO>),
@@ -272,12 +272,12 @@ describe('OrdersController', () => {
       const expectedError = undefined;
       jest.spyOn(ordersService, 'readOrderByCustomer').mockImplementation(() =>
         Promise.resolve(
-          plainToClass(OrderDTO, {
+          plainToInstance(OrderDTO, {
             id: paramArgument.id,
             title: 'Order 1',
             userId: userArgument.id,
             carts: [
-              plainToClass(CartDTO, {
+              plainToInstance(CartDTO, {
                 id: '12345',
                 quantity: 2,
               } as Partial<CartDTO>),
@@ -339,11 +339,11 @@ describe('OrdersController', () => {
         current_page: queryArgument.page,
         per_page: 1,
         data: [
-          plainToClass(OrderDTO, {
+          plainToInstance(OrderDTO, {
             id: UUIDv1,
             title: 'Order 2',
             carts: [
-              plainToClass(CartDTO, {
+              plainToInstance(CartDTO, {
                 id: UUIDv2,
                 quantity: 3,
               } as Partial<CartDTO>),
@@ -355,17 +355,17 @@ describe('OrdersController', () => {
       jest.spyOn(ordersService, 'readAllOrderByAdmin').mockImplementation(() =>
         Promise.resolve({
           findAll: [
-            plainToClass(OrderDTO, {
+            plainToInstance(OrderDTO, {
               id: UUIDv1,
               title: 'Order 1',
             } as Partial<OrderDTO>),
           ],
           findAllPagination: [
-            plainToClass(OrderDTO, {
+            plainToInstance(OrderDTO, {
               id: UUIDv1,
               title: 'Order 2',
               carts: [
-                plainToClass(CartDTO, {
+                plainToInstance(CartDTO, {
                   id: UUIDv2,
                   quantity: 3,
                 } as Partial<CartDTO>),
@@ -423,12 +423,12 @@ describe('OrdersController', () => {
         current_page: queryArgument.page,
         per_page: 1,
         data: [
-          plainToClass(OrderDTO, {
+          plainToInstance(OrderDTO, {
             id: UUIDv1,
             title: 'Order 2',
             userId: userArgument.id,
             carts: [
-              plainToClass(CartDTO, {
+              plainToInstance(CartDTO, {
                 id: UUIDv2,
                 quantity: 4,
               } as Partial<CartDTO>),
@@ -442,19 +442,19 @@ describe('OrdersController', () => {
         .mockImplementation(() =>
           Promise.resolve({
             findAll: [
-              plainToClass(OrderDTO, {
+              plainToInstance(OrderDTO, {
                 id: UUIDv1,
                 title: 'Order 1',
                 userId: userArgument.id,
               } as Partial<OrderDTO>),
             ],
             findAllPagination: [
-              plainToClass(OrderDTO, {
+              plainToInstance(OrderDTO, {
                 id: UUIDv1,
                 title: 'Order 2',
                 userId: userArgument.id,
                 carts: [
-                  plainToClass(CartDTO, {
+                  plainToInstance(CartDTO, {
                     id: UUIDv2,
                     quantity: 4,
                   } as Partial<CartDTO>),

@@ -8,7 +8,6 @@ import { IReadAllServiceMethodResponse } from '@shared/interfaces/other/service-
 export interface IProductsService {
   createProduct(payload: CreateProductDTO);
   updateProduct(payload: UpdateProductDTO);
-  deleteAllProduct();
   readAllProduct(
     payload: ReadAllProductDTO,
   ): Promise<IReadAllServiceMethodResponse<ProductDTO[]>>;

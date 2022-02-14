@@ -9,7 +9,7 @@ import { MockedProductsRepository } from '@app/products/__mocks__/repository/moc
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { IReadAllServiceMethodResponse } from '@shared/interfaces/other/service-method-response/read-all-service-method-response.interface';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { randomUUID } from 'crypto';
 
 describe('ProductsService', () => {
@@ -77,35 +77,6 @@ describe('ProductsService', () => {
     });
   });
 
-  describe('deleteAllProduct()', () => {
-    it('should successfully clear all product', async () => {
-      const expectedResult = undefined;
-      const expectedError = undefined;
-      jest
-        .spyOn(productsRepository, 'clearAllProduct')
-        .mockImplementation(() => Promise.resolve(null));
-      try {
-        const data = await productsService.deleteAllProduct();
-        expect(data).toEqual(expectedResult);
-      } catch (error) {
-        expect(error).toEqual(expectedError);
-      }
-    });
-    it('should failed clear all product', async () => {
-      const expectedResult = undefined;
-      const expectedError = 'Failed Clear All Product';
-      jest
-        .spyOn(productsRepository, 'clearAllProduct')
-        .mockImplementation(() => Promise.reject('Failed Clear All Product'));
-      try {
-        const data = await productsService.deleteAllProduct();
-        expect(data).toEqual(expectedResult);
-      } catch (error) {
-        expect(error).toEqual(expectedError);
-      }
-    });
-  });
-
   describe('readAllProduct()', () => {
     it('should successfully read all product', async () => {
       const argument: ReadAllProductDTO = {
@@ -116,14 +87,14 @@ describe('ProductsService', () => {
       const UUIDv2 = randomUUID();
       const expectedResult: IReadAllServiceMethodResponse<ProductDTO[]> = {
         findAll: [
-          plainToClass(ProductDTO, {
+          plainToInstance(ProductDTO, {
             id: UUIDv1,
             name: 'Hello',
             price: 200,
           } as ProductDTO),
         ],
         findAllPagination: [
-          plainToClass(ProductDTO, {
+          plainToInstance(ProductDTO, {
             id: UUIDv2,
             name: 'Hello',
             price: 200,
@@ -133,7 +104,7 @@ describe('ProductsService', () => {
       const expectedError = undefined;
       jest.spyOn(productsRepository, 'findAllProduct').mockImplementation(() =>
         Promise.resolve([
-          plainToClass(ProductDTO, {
+          plainToInstance(ProductDTO, {
             id: UUIDv1,
             name: 'Hello',
             price: 200,
@@ -144,7 +115,7 @@ describe('ProductsService', () => {
         .spyOn(productsRepository, 'findAllProductPagination')
         .mockImplementation(() =>
           Promise.resolve([
-            plainToClass(ProductDTO, {
+            plainToInstance(ProductDTO, {
               id: UUIDv2,
               name: 'Hello',
               price: 200,
@@ -185,7 +156,7 @@ describe('ProductsService', () => {
       const argument: ReadProductDTO = {
         id: randomUUID(),
       };
-      const expectedResult: ProductDTO = plainToClass(ProductDTO, {
+      const expectedResult: ProductDTO = plainToInstance(ProductDTO, {
         id: argument.id,
         name: 'Hello',
         price: 200,
@@ -193,7 +164,7 @@ describe('ProductsService', () => {
       const expectedError = undefined;
       jest.spyOn(productsRepository, 'findProduct').mockImplementation(() =>
         Promise.resolve(
-          plainToClass(ProductDTO, {
+          plainToInstance(ProductDTO, {
             id: argument.id,
             name: 'Hello',
             price: 200,

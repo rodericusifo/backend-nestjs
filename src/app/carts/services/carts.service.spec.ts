@@ -1,7 +1,7 @@
+import { CartsRepository } from '@app/carts/database/repositories/carts.repository';
 import { CartDTO } from '@app/carts/dto/cart.dto';
 import { CreateCartDTO } from '@app/carts/dto/create-cart.dto';
 import { ReadAllCartDTO } from '@app/carts/dto/read-all-cart.dto';
-import { CartsRepository } from '@app/carts/database/repositories/carts.repository';
 import { CartsService } from '@app/carts/services/carts.service';
 import { MockedCartsRepository } from '@app/carts/__mocks__/repository/mock-carts.repository';
 import { ProductDTO } from '@app/products/dto/product.dto';
@@ -9,7 +9,7 @@ import { ProductsService } from '@app/products/services/products.service';
 import { MockedProductsService } from '@app/products/__mocks__/service/mock-products.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { randomUUID } from 'crypto';
 
 describe('CartsService', () => {
@@ -55,7 +55,7 @@ describe('CartsService', () => {
       const expectedError = undefined;
       jest.spyOn(productsService, 'readProduct').mockImplementation(() =>
         Promise.resolve(
-          plainToClass(ProductDTO, {
+          plainToInstance(ProductDTO, {
             id: argument.productId,
             name: 'Apple',
             price: 2000,
@@ -99,7 +99,7 @@ describe('CartsService', () => {
         orderId: randomUUID(),
       };
       const expectedResult: CartDTO[] = [
-        plainToClass(CartDTO, {
+        plainToInstance(CartDTO, {
           id: '12345',
           orderId: argument.orderId,
         } as Partial<CartDTO>),
@@ -107,7 +107,7 @@ describe('CartsService', () => {
       const expectedError = undefined;
       jest.spyOn(cartsRepository, 'findAllCart').mockImplementation(() =>
         Promise.resolve([
-          plainToClass(CartDTO, {
+          plainToInstance(CartDTO, {
             id: '12345',
             orderId: argument.orderId,
           } as Partial<CartDTO>),

@@ -1,5 +1,6 @@
 import { CartsService } from '@app/carts/services/carts.service';
 import { FilesService } from '@app/files/services/files.service';
+import { OrdersRepository } from '@app/orders/database/repositories/orders.repository';
 import { AddProductToOrderDTO } from '@app/orders/dto/add-product-to-order.dto';
 import { CreateOrderDTO } from '@app/orders/dto/create-order.dto';
 import { OrderDTO } from '@app/orders/dto/order.dto';
@@ -9,7 +10,6 @@ import { ReadOrderByAdminDTO } from '@app/orders/dto/read-order-by-admin.dto';
 import { ReadOrderByCustomerDTO } from '@app/orders/dto/read-order-by-customer.dto';
 import { SubmitOrderPaymentProofDTO } from '@app/orders/dto/submit-order-payment-proof.dto';
 import { SubmitOrderDTO } from '@app/orders/dto/submit-order.dto';
-import { OrdersRepository } from '@app/orders/database/repositories/orders.repository';
 import { IOrdersService } from '@app/orders/services/interfaces/orders-service.interface';
 import { ProductsService } from '@app/products/services/products.service';
 import { Injectable } from '@nestjs/common';
@@ -18,7 +18,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { OrderStatus } from '@shared/enums/order-status.enum';
 import { IQuery } from '@shared/interfaces/other/query.interface';
 import { IReadAllServiceMethodResponse } from '@shared/interfaces/other/service-method-response/read-all-service-method-response.interface';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class OrdersService implements IOrdersService {
@@ -32,12 +32,12 @@ export class OrdersService implements IOrdersService {
   ) {}
 
   async createOrder(payload: CreateOrderDTO) {
-    const orderDTO = plainToClass(OrderDTO, payload);
+    const orderDTO = plainToInstance(OrderDTO, payload);
     await this.ordersRepository.saveOrder(orderDTO);
   }
 
   async addProductToOrder(payload: AddProductToOrderDTO) {
-    const orderDTO = plainToClass(OrderDTO, {
+    const orderDTO = plainToInstance(OrderDTO, {
       id: payload.id,
       userId: payload.userId,
     });
@@ -52,7 +52,7 @@ export class OrdersService implements IOrdersService {
   }
 
   async readOrderByAdmin(payload: ReadOrderByAdminDTO): Promise<OrderDTO> {
-    const orderDTO = plainToClass(OrderDTO, {
+    const orderDTO = plainToInstance(OrderDTO, {
       id: payload.id,
     });
     const foundOrderDTO = await this.ordersRepository.findOrder(orderDTO);
@@ -65,7 +65,7 @@ export class OrdersService implements IOrdersService {
   async readOrderByCustomer(
     payload: ReadOrderByCustomerDTO,
   ): Promise<OrderDTO> {
-    const orderDTO = plainToClass(OrderDTO, {
+    const orderDTO = plainToInstance(OrderDTO, {
       id: payload.id,
       userId: payload.userId,
     });
@@ -107,7 +107,7 @@ export class OrdersService implements IOrdersService {
   async readAllOrderByCustomer(
     payload: ReadAllOrderByCustomerDTO,
   ): Promise<IReadAllServiceMethodResponse<OrderDTO[]>> {
-    const orderDTO = plainToClass(OrderDTO, {
+    const orderDTO = plainToInstance(OrderDTO, {
       userId: payload.userId,
     });
     const query: IQuery = {
@@ -139,7 +139,7 @@ export class OrdersService implements IOrdersService {
   }
 
   async submitOrder(payload: SubmitOrderDTO) {
-    const orderDTO = plainToClass(OrderDTO, {
+    const orderDTO = plainToInstance(OrderDTO, {
       id: payload.id,
       userId: payload.userId,
     });
@@ -166,7 +166,7 @@ export class OrdersService implements IOrdersService {
   }
 
   async submitOrderPaymentProof(payload: SubmitOrderPaymentProofDTO) {
-    const orderDTO = plainToClass(OrderDTO, {
+    const orderDTO = plainToInstance(OrderDTO, {
       id: payload.id,
       userId: payload.userId,
     });

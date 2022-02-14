@@ -8,7 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ILoginAuthServiceMethodResponse } from '@shared/interfaces/other/service-method-response/login-auth-service-method-response.interface';
 import { MockedJwtService } from '@shared/__mocks__/service/mock-jwt.service';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { randomUUID } from 'crypto';
 
 describe('AuthService', () => {
@@ -93,7 +93,7 @@ describe('AuthService', () => {
       const expectedError = undefined;
       jest.spyOn(usersService, 'readUserForLogin').mockImplementation(() =>
         Promise.resolve(
-          plainToClass(UserDTO, {
+          plainToInstance(UserDTO, {
             id: randomUUID(),
             email: 'ifo@gmail.com',
             password: '12345',

@@ -14,7 +14,4 @@ export class MockedUsersService implements IUsersService {
   readUserForLogin(_payload: ReadUserForLoginDTO): Promise<UserDTO> {
     throw new Error('Method not implemented.');
   }
-  deleteAllAdminUser() {
-    throw new Error('Method not implemented.');
-  }
 }

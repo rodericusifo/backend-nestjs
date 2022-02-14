@@ -6,5 +6,4 @@ export interface IUsersService {
   createUserAsAdmin(payload: CreateUserDTO);
   createUserAsCustomer(payload: CreateUserDTO);
   readUserForLogin(payload: ReadUserForLoginDTO): Promise<UserDTO>;
-  deleteAllAdminUser();
 }

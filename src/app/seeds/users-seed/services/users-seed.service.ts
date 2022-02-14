@@ -1,34 +1,33 @@
-import { UsersSeedBuilder } from '@app/seeds/users-seed/builders/users-seed.builder';
-import { UsersService } from '@app/users/services/users.service';
-import { Injectable } from '@nestjs/common';
+import { usersSeedDatas } from '@app/seeds/users-seed/data/users-seed.data';
+import { UsersRepository } from '@app/users/database/repositories/users.repository';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ISeedService } from '@shared/interfaces/service/seed-service.interface';
-import { Command } from 'nestjs-command';
 
 @Injectable()
 export class UsersSeedService implements ISeedService {
+  private readonly loggerConsole = new Logger(UsersSeedService.name);
+
   constructor(
-    private readonly usersService: UsersService,
+    private readonly usersRepository: UsersRepository,
     private readonly configService: ConfigService,
   ) {}
 
-  @Command({
-    command: 'seed:up:users',
-    describe: 'seeding users',
-  })
-  async up() {
-    UsersSeedBuilder.build(
-      +this.configService.get<number>('db-seed.users'),
-    ).forEach(async (usersSeedData) => {
-      await this.usersService.createUserAsAdmin(usersSeedData);
+  async seed() {
+    this.loggerConsole.debug('Seed Users on Progress');
+    const userDTOs = await this.usersRepository.findAllAdminUserForSeed();
+    if (usersSeedDatas.length < userDTOs.length) {
+      await this.usersRepository.removeAllAdminUserForSeed();
+    }
+    usersSeedDatas.forEach(async (usersSeedData) => {
+      usersSeedData.setAsAdmin();
+      await usersSeedData.encryptPassword(
+        +this.configService.get<number>('app.hash.passwordSaltLength'),
+      );
+      await this.usersRepository.saveAdminUserForSeed(usersSeedData);
     });
-  }
-
-  @Command({
-    command: 'seed:drop:users',
-    describe: 'drop seeding users',
-  })
-  async drop() {
-    await this.usersService.deleteAllAdminUser();
+    this.loggerConsole.debug(
+      `Successfully Seed Users. Total of Data: ${userDTOs.length}`,
+    );
   }
 }

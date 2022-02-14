@@ -1,7 +1,7 @@
-import { UserDTO } from '@app/users/dto/user.dto';
 import { User } from '@app/users/database/entities/user.entity';
 import { UsersMapper } from '@app/users/database/mappers/users.mapper';
 import { IUsersRepository } from '@app/users/database/repositories/interfaces/users-repository.interface';
+import { UserDTO } from '@app/users/dto/user.dto';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { Role } from '@shared/enums/role.enum';
 import { EntityRepository, Repository } from 'typeorm';
@@ -38,7 +38,26 @@ export class UsersRepository
     return UsersMapper.EntityToDTO(foundUser);
   }
 
-  async removeAllAdminUser() {
+  async saveAdminUserForSeed(userDTO: Partial<UserDTO>) {
+    const user = UsersMapper.DTOToEntity(userDTO);
+    const foundUser = await this.findOne(
+      {
+        email: user.email,
+      },
+      { withDeleted: true },
+    );
+    if (foundUser) {
+      return;
+    }
+    await this.save(user);
+  }
+
+  async findAllAdminUserForSeed(): Promise<UserDTO[]> {
+    const users = await this.find({ roles: [Role.Admin] });
+    return users.map(UsersMapper.EntityToDTO);
+  }
+
+  async removeAllAdminUserForSeed() {
     const users = await this.find({ roles: [Role.Admin] });
     await this.remove(users);
   }

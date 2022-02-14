@@ -4562,10 +4562,10 @@ nest-winston@^1.4.0:
     cli-color "^2.0.0"
     fast-safe-stringify "^2.0.7"
 
-nestjs-command@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/nestjs-command/-/nestjs-command-3.1.0.tgz#b8f20557fbcb865f23cb348eff71a2146d29d850"
-  integrity sha512-CdA4iJ53J2IJiL8suMm1QQrsTJvgcPVdzFs8ZK4gQG3k+o3fsRhflsxDz7ao1CW2mR00h6ro3pXPdL4YcSRUog==
+nestjs-command@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/nestjs-command/-/nestjs-command-3.1.1.tgz#26e11cef4b3f588a63d20fdf32da7e18e61d774a"
+  integrity sha512-jis8nS0QNZkw35BzBlkkOqty4BJcomUZdmIyne+HjSdk0CwIy6PzXkhGiUIPySBwoK/6d4OxjFQckVoNB/H0TA==
   dependencies:
     lodash.compact "^3.0.1"
     lodash.flattendeep "^4.4.0"

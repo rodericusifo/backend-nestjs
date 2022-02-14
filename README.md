@@ -58,6 +58,6 @@ Good luck.
 
 ## More Explanation
 
-- Run: yarn seed:up
+- Run: yarn start
 - Documentation: {origin}/api/v1/docs
 - Coverage: yarn test:cov

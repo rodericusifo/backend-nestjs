@@ -1,12 +1,12 @@
+import { CartsRepository } from '@app/carts/database/repositories/carts.repository';
 import { CartDTO } from '@app/carts/dto/cart.dto';
 import { CreateCartDTO } from '@app/carts/dto/create-cart.dto';
 import { ReadAllCartDTO } from '@app/carts/dto/read-all-cart.dto';
-import { CartsRepository } from '@app/carts/database/repositories/carts.repository';
 import { ICartsService } from '@app/carts/services/interfaces/carts-service.interface';
 import { ProductsService } from '@app/products/services/products.service';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class CartsService implements ICartsService {
@@ -21,7 +21,7 @@ export class CartsService implements ICartsService {
       id: payload.productId,
     });
     foundProductDTO.checkAvailability();
-    const cartDTO = plainToClass(CartDTO, {
+    const cartDTO = plainToInstance(CartDTO, {
       quantity: payload.quantity,
       product: foundProductDTO,
       orderId: payload.orderId,
@@ -31,7 +31,7 @@ export class CartsService implements ICartsService {
   }
 
   async readAllCart(payload: ReadAllCartDTO): Promise<CartDTO[]> {
-    const cartDTO = plainToClass(CartDTO, payload);
+    const cartDTO = plainToInstance(CartDTO, payload);
     const foundCartDTOs = await this.cartsRepository.findAllCart(cartDTO);
     return foundCartDTOs;
   }

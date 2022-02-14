@@ -1,12 +1,13 @@
-import { ProductsModule } from '@app/products/products.module';
+import { ProductsRepository } from '@app/products/database/repositories/products.repository';
 import { ProductsSeedService } from '@app/seeds/products-seed/services/products-seed.service';
+import { SeedsService } from '@app/seeds/seeds.service';
 import { UsersSeedService } from '@app/seeds/users-seed/services/users-seed.service';
-import { UsersModule } from '@app/users/users.module';
+import { UsersRepository } from '@app/users/database/repositories/users.repository';
 import { Module } from '@nestjs/common';
-import { CommandModule } from 'nestjs-command';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [CommandModule, ProductsModule, UsersModule],
-  providers: [ProductsSeedService, UsersSeedService],
+  imports: [TypeOrmModule.forFeature([ProductsRepository, UsersRepository])],
+  providers: [ProductsSeedService, UsersSeedService, SeedsService],
 })
 export class SeedsModule {}

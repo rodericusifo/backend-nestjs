@@ -4,6 +4,15 @@ import { IProductsRepository } from '@app/products/database/repositories/interfa
 import { IQuery } from '@shared/interfaces/other/query.interface';
 
 export class MockedProductsRepository implements IProductsRepository {
+  saveProductForSeed(_productDTO: Partial<ProductDTO>) {
+    throw new Error('Method not implemented.');
+  }
+  findAllProductForSeed(): Promise<ProductDTO[]> {
+    throw new Error('Method not implemented.');
+  }
+  clearAllProductForSeed() {
+    throw new Error('Method not implemented.');
+  }
   saveProduct(_productDTO: ProductDTO) {
     throw new Error('Method not implemented.');
   }

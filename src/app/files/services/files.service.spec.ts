@@ -1,13 +1,13 @@
+import { FilesRepository } from '@app/files/database/repositories/files.repository';
 import { CreateFileDTO } from '@app/files/dto/create-file.dto';
 import { FileDTO } from '@app/files/dto/file.dto';
 import { ReadFilePaymentProofDTO } from '@app/files/dto/read-file-payment-proof.dto';
-import { FilesRepository } from '@app/files/database/repositories/files.repository';
 import { FilesService } from '@app/files/services/files.service';
 import { MockedFilesRepository } from '@app/files/__mocks__/repository/mock-files.repository';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Role } from '@shared/enums/role.enum';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { randomUUID } from 'crypto';
 
 describe('FilesService', () => {
@@ -42,7 +42,7 @@ describe('FilesService', () => {
         path: 'pdf/a.pdf',
         userId: randomUUID(),
       };
-      const expectedResult = plainToClass(FileDTO, {
+      const expectedResult = plainToInstance(FileDTO, {
         id: randomUUID(),
         mimeType: 'pdf',
         originalName: 'a.pdf',
@@ -52,7 +52,7 @@ describe('FilesService', () => {
       const expectedError = undefined;
       jest.spyOn(filesRepository, 'saveFile').mockImplementation(() =>
         Promise.resolve(
-          plainToClass(FileDTO, {
+          plainToInstance(FileDTO, {
             id: expectedResult.id,
             mimeType: 'pdf',
             originalName: 'a.pdf',
@@ -96,7 +96,7 @@ describe('FilesService', () => {
         userRoles: [Role.Admin],
         userId: randomUUID(),
       };
-      const expectedResult = plainToClass(FileDTO, {
+      const expectedResult = plainToInstance(FileDTO, {
         id: randomUUID(),
         mimeType: 'pdf',
         originalName: 'a.pdf',
@@ -106,7 +106,7 @@ describe('FilesService', () => {
       const expectedError = undefined;
       jest.spyOn(filesRepository, 'findFile').mockImplementation(() =>
         Promise.resolve(
-          plainToClass(FileDTO, {
+          plainToInstance(FileDTO, {
             id: expectedResult.id,
             mimeType: 'pdf',
             originalName: 'a.pdf',
@@ -128,7 +128,7 @@ describe('FilesService', () => {
         userRoles: [Role.Customer],
         userId: randomUUID(),
       };
-      const expectedResult = plainToClass(FileDTO, {
+      const expectedResult = plainToInstance(FileDTO, {
         id: randomUUID(),
         mimeType: 'pdf',
         originalName: 'b.pdf',
@@ -138,7 +138,7 @@ describe('FilesService', () => {
       const expectedError = undefined;
       jest.spyOn(filesRepository, 'findFileWithUserId').mockImplementation(() =>
         Promise.resolve(
-          plainToClass(FileDTO, {
+          plainToInstance(FileDTO, {
             id: expectedResult.id,
             mimeType: 'pdf',
             originalName: 'b.pdf',

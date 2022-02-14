@@ -1,7 +1,7 @@
-import { ProductDTO } from '@app/products/dto/product.dto';
 import { Product } from '@app/products/database/entities/product.entity';
 import { ProductsMapper } from '@app/products/database/mappers/products.mapper';
 import { IProductsRepository } from '@app/products/database/repositories/interfaces/products-repository.interface';
+import { ProductDTO } from '@app/products/dto/product.dto';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { ProductsSortingBy } from '@shared/enums/sorting/products-sorting-by.enum';
 import { SortingType } from '@shared/enums/sorting/sorting-type.enum';
@@ -70,7 +70,23 @@ export class ProductsRepository
     }
   }
 
-  async clearAllProduct() {
+  async saveProductForSeed(productDTO: Partial<ProductDTO>) {
+    const product = ProductsMapper.DTOToEntity(productDTO);
+    const foundProduct = await this.findOne({
+      name: product.name,
+    });
+    if (foundProduct) {
+      return;
+    }
+    await this.save(product);
+  }
+
+  async findAllProductForSeed(): Promise<ProductDTO[]> {
+    const foundProducts = await this.find();
+    return foundProducts.map(ProductsMapper.EntityToDTO);
+  }
+
+  async clearAllProductForSeed() {
     await this.clear();
   }
 }

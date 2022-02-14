@@ -1,12 +1,12 @@
+import { FilesRepository } from '@app/files/database/repositories/files.repository';
 import { CreateFileDTO } from '@app/files/dto/create-file.dto';
 import { FileDTO } from '@app/files/dto/file.dto';
 import { ReadFilePaymentProofDTO } from '@app/files/dto/read-file-payment-proof.dto';
-import { FilesRepository } from '@app/files/database/repositories/files.repository';
 import { IFilesService } from '@app/files/services/interfaces/files-service.interface';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from '@shared/enums/role.enum';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class FilesService implements IFilesService {
@@ -15,7 +15,7 @@ export class FilesService implements IFilesService {
     private readonly filesRepository: FilesRepository,
   ) {}
   async createFile(payload: CreateFileDTO): Promise<FileDTO> {
-    const fileDTO = plainToClass(FileDTO, payload);
+    const fileDTO = plainToInstance(FileDTO, payload);
     const savedFileDTO = await this.filesRepository.saveFile(fileDTO);
     return savedFileDTO;
   }
@@ -23,7 +23,7 @@ export class FilesService implements IFilesService {
   async readFilePaymentProof(
     payload: ReadFilePaymentProofDTO,
   ): Promise<FileDTO> {
-    const fileDTO = plainToClass(FileDTO, {
+    const fileDTO = plainToInstance(FileDTO, {
       id: payload.id,
       userId: payload.userId,
     } as Partial<FileDTO>);
