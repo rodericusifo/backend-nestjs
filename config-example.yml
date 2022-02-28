@@ -28,7 +28,3 @@ db:
     username: ""
     password: ""
     name: "AIT_Test"
-
-db-seed:
-  products: 15
-  users: 1
