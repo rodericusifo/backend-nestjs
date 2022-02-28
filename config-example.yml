@@ -27,4 +27,4 @@ db:
     port: 5432
     username: ""
     password: ""
-    name: "AIT_Test"
+    name: "Nest_Practice"
