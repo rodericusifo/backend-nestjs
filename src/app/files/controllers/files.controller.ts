@@ -7,7 +7,6 @@ import { User } from '@shared/decorators/user.decorator';
 import { Role } from '@shared/enums/role.enum';
 import { UserRequest } from '@shared/request/user/user.request';
 import { Response } from 'express';
-import { createReadStream } from 'fs';
 import { join } from 'path';
 
 @ApiTags('Files')
@@ -28,11 +27,6 @@ export class FilesController {
       userRoles: user.roles,
     });
     const filePath = join(process.cwd(), foundFileDTO.path);
-    const file = createReadStream(filePath);
-    res.set({
-      'Content-Type': foundFileDTO.mimeType,
-      'Content-Disposition': `attachment; filename="${foundFileDTO.originalName}"`,
-    });
-    file.pipe(res);
+    res.download(filePath, foundFileDTO.originalName);
   }
 }
