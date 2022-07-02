@@ -40,3 +40,4 @@ config.yml
 .npmrc
 
 /uploads
+*.lock
