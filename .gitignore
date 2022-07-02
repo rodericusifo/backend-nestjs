@@ -40,4 +40,5 @@ config.yml
 .npmrc
 
 /uploads
-*.lock
+yarn.lock
+package-lock.json
